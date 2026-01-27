@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: document-management
+  #Prevents H2 tables from disappering, keeps DB alive during application lifecycle,required for Flayway and JDBC combo
+  datasource:
+    url: jdbc:h2:mem:docdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sshivare
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  jdbc:
+    template:
+      fetch-size: 100
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+#Document upload configuration
+document:
+  storage:
+    base-path: C:\Users\suyogita.shivare\OneDrive - Accenture\Desktop\Upload_PDF
