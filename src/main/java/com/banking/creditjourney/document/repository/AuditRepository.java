@@ -12,11 +12,6 @@ public class AuditRepository {
 
 	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	public AuditRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-		super();
-		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-	}
-
 	public void saveAudit(Long documentId, String action, String performedBy, String reason) {
 
 		MapSqlParameterSource params = new MapSqlParameterSource().addValue("documentId", documentId)
