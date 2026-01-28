@@ -1,13 +1,17 @@
-# credit-journey-document-management
-Production grade document management REST platform for banking Credit Journey Digitalization initiative using Java Spring Boot
+# credit-journey-document-management 
 
+## Service Ownership
+**Owner:** Suyogita Shivare, 
+**Role:** Custom Software Engineering Team Lead, 
+**Contact:** suyogita.shivare@accenture.com
 
-Document Management REST API (Enterprise-Grade)                                                                                
-Overview:
+### Document Management REST API (Enterprise-Grade) 
+
+#### Overview:
 This project implements a production-ready PDF Document Management REST API using Spring Boot. It supports secure document upload, retrieval, listing, and GDPR-compliant deletion with enterprise-grade validations, observability, and testing standards.
 The system is designed following Clean / Layered Architecture principles with strong separation of concerns, high test coverage, and clear operational readiness.
 ________________________________________
-Key Features:
+#### Key Features:
 
 • Secure document upload & download (streaming)
 
@@ -30,9 +34,8 @@ Key Features:
 • Enterprise testing & quality gates
 
 ________________________________________
-Architecture:
 
-High-Level Design
+#### Architecture:
 
 • Controller Layer – REST endpoints, DTOs, API versioning
 
@@ -49,9 +52,9 @@ High-Level Design
 • Cross-Cutting Concerns – Logging, metrics, exception handling
 
 This architecture ensures maintainability, scalability, and testability.
-
 ________________________________________
-Tech Stack:
+
+#### Tech Stack:
 
 Category     Technology
 
@@ -70,24 +73,19 @@ API Docs     Swagger / OpenAPI
 Testing      JUnit 5, Mockito, MockMvc
 
 Quality      JaCoCo, SonarLint
-
 ________________________________________
 
-API Endpoints (api/documentmgmt):
+#### API Endpoints ('api/documentmgmt'):
 
-Method                Endpoint                                  Description
-
-POST       api/documentmgmt/documentUpload                    Upload document
-
-GET        api/documentmgmt/documents/{documentId}            Download document
-
-GET        api/documentmgmt/documentsListing                   List documents
-
-DELETE     api/documentmgmt/documentsDelete                 Soft/Hard(GDPR) delete
-
+| Method | Endpoint                                           | Description                     |
+|-------:|----------------------------------------------------|---------------------------------|
+| POST   | `/api/documentmgmt/documentUpload`                 | Upload document                 |
+| GET    | `/api/documentmgmt/documents/{documentId}`         | Download document               |
+| GET    | `/api/documentmgmt/documentsListing`               | List documents                  |
+| DELETE | `/api/documentmgmt/documentsDelete`                | Soft / Hard (GDPR) delete       |
 ________________________________________
 
-Security:
+#### Security:
 
 • Stateless JWT authentication
 
@@ -96,10 +94,9 @@ Security:
 • User ID extracted from token
 
 • Owner-based authorization enforced at service layer.Only authenticated users can access APIs, and users can access only their own documents.
-
 ________________________________________
 
-Validation Rules:
+#### Validation Rules:
 
 • Allowed MIME types: PDF (configurable)
 
@@ -108,10 +105,9 @@ Validation Rules:
 • Duplicate detection via SHA-256 checksum
 
 • Standardized error responses
-
 ________________________________________
 
-Error Handling:
+#### Error Handling:
 
 • Global exception handler
 
@@ -120,7 +116,7 @@ Error Handling:
 • Proper HTTP status codes
 ________________________________________
 
-Observability:
+#### Observability:
 
 • Structured logging with correlation ID
 
@@ -129,7 +125,7 @@ Observability:
 • Metrics exposed via Actuator
 ________________________________________
 
-Testing Strategy:
+#### Testing Strategy:
 
 Unit Tests
 
@@ -153,7 +149,7 @@ Quality Gates
 
 ________________________________________
 
-Local Setup:
+#### Local Setup:
 
 Prerequisites
 
@@ -172,10 +168,9 @@ http://localhost:8080/swagger-ui.html
 H2 console:
 
 http://localhost:8080/h2-console
-
 ________________________________________
 
-Configuration:
+#### Configuration:
 
 • File storage path
 
@@ -189,17 +184,16 @@ All configurations are externalized using application.yml
 
 ________________________________________
 
-Build & Quality:
+#### Build & Quality:
 
 ./gradlew clean build
 
 ./gradlew test
 
 ./gradlew jacocoTestReport
-
 ________________________________________
 
-Release Process:
+#### Release Process:
 
 • Feature branches
 
@@ -211,6 +205,6 @@ Release Process:
 
 __________________________________________
 
-Ownership:
+#### Ownership:
 
 This project demonstrates enterprise engineering maturity, clean architecture practices, and strong quality discipline suitable for production systems and technical leadership evaluations.
