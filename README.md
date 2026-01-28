@@ -75,15 +75,15 @@ ________________________________________
 
 API Endpoints (api/documentmgmt):
 
-Method     Endpoint                                  Description
+Method                Endpoint                                  Description
 
-POST       api/documentmgmt/documentUpload           Upload document
+POST       api/documentmgmt/documentUpload                    Upload document
 
-GET        api/documentmgmt/documents/{documentId}   Download document
+GET        api/documentmgmt/documents/{documentId}            Download document
 
-GET        api/documentmgmt/documentsListing         List documents
+GET        api/documentmgmt/documentsListing                   List documents
 
-DELETE     api/documentmgmt/documentsDelete          Soft/Hard(GDPR) delete
+DELETE     api/documentmgmt/documentsDelete                 Soft/Hard(GDPR) delete
 
 ________________________________________
 
