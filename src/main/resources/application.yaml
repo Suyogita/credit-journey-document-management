@@ -30,7 +30,8 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
-#Document upload configuration
+
 document:
   storage:
-    base-path: C:\Users\suyogita.shivare\OneDrive - Accenture\Desktop\Upload_PDF
+    base:
+      path: "C:/Document_Management/PDF_Uploads"

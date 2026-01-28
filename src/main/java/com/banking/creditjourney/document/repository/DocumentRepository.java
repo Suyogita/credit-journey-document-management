@@ -25,7 +25,8 @@ public class DocumentRepository {
 	public Long saveDocumentIntoDB(Document doc) {
 		MapSqlParameterSource params = new MapSqlParameterSource().addValue("userId", doc.getUserId())
 				.addValue("fileName", doc.getFileName()).addValue("fileType", doc.getFileType())
-				.addValue("fileSize", doc.getFileSize()).addValue("checksum", doc.getChecksum());
+				.addValue("fileSize", doc.getFileSize()).addValue("checksum", doc.getChecksum())
+				.addValue("storagePath", doc.getStoragePath());
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		namedParameterJdbcTemplate.update(DocumentsQueries.INSERT_DOCUMENT, params, keyHolder,
 				new String[] { "documentid" });

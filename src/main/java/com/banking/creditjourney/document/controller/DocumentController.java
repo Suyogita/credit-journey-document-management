@@ -20,6 +20,7 @@ import com.banking.creditjourney.document.dto.request.DeleteDocumentRequest;
 import com.banking.creditjourney.document.dto.response.ApiResponseDetails;
 import com.banking.creditjourney.document.dto.response.DocumentResponse;
 import com.banking.creditjourney.document.service.DocumentServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -46,15 +47,20 @@ public class DocumentController {
 	 * System and save file metadata into DB.
 	 *
 	 */
-	@Operation(summary = "Upload single or multiple PDF document(s) at Local File System and save file metadata into DB", description = "Upload one or multiple PDF files with metadata")
+	@Operation(summary = "Upload single or multiple PDF document(s) at Local File System and save file metadata into DB",
+			description = "Upload one or multiple PDF files with metadata")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "File uploaded successfully"),
 			@ApiResponse(responseCode = "400", description = "Validation error"),
 			@ApiResponse(responseCode = "409", description = "Duplicate file"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@PostMapping(value = "/documentUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<DocumentResponse>> documentUploads(
-			@Parameter(description = "PDF files to upload", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @RequestPart("files") List<MultipartFile> files,
-			@Parameter(description = "Document metadata", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) @RequestPart("request") CreateDocumentRequest request) {
+			@Parameter(description = "PDF files to upload", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
+			@RequestPart("files") List<MultipartFile> files,
+			@Parameter(description = "Document metadata", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+			@RequestPart(value = "request", required = false) String requestJson) throws Exception{
+		ObjectMapper mapper=new ObjectMapper();
+		CreateDocumentRequest request=mapper.readValue(requestJson, CreateDocumentRequest.class);
 		List<DocumentResponse> resp = documentService.uploadFiles(files, request);
 		return ResponseEntity.ok(resp);
 	}
