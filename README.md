@@ -8,6 +8,7 @@ This project implements a production-ready PDF Document Management REST API usin
 The system is designed following Clean / Layered Architecture principles with strong separation of concerns, high test coverage, and clear operational readiness.
 ________________________________________
 Key Features:
+
 • Secure document upload & download (streaming)
 • MIME type and file size validation
 • Duplicate detection using SHA-256 checksum
@@ -20,7 +21,9 @@ Key Features:
 • Enterprise testing & quality gates
 ________________________________________
 Architecture:
+
 High-Level Design
+
 • Controller Layer – REST endpoints, DTOs, API versioning
 • Security Layer – JWT authentication filter, authorization
 • Service Layer – Business logic, validations, checksum logic
@@ -31,6 +34,7 @@ High-Level Design
 This architecture ensures maintainability, scalability, and testability.
 ________________________________________
 Tech Stack:
+
 Category     Technology
 Language     Java 21
 Framework    Spring Boot
@@ -42,14 +46,17 @@ Testing      JUnit 5, Mockito, MockMvc
 Quality      JaCoCo, SonarLint
 ________________________________________
 
-API Endpoints (api/documentmgmt)
+API Endpoints (api/documentmgmt):
+
 Method     Endpoint                                  Description
 POST       api/documentmgmt/documentUpload           Upload document
 GET        api/documentmgmt/documents/{documentId}   Download document
 GET        api/documentmgmt/documentsListing         List documents
 DELETE     api/documentmgmt/documentsDelete          Soft/Hard(GDPR) delete
 ________________________________________
+
 Security:
+
 • Stateless JWT authentication
 • Token validated via filter
 • User ID extracted from token
@@ -57,22 +64,29 @@ Security:
 ________________________________________
 
 Validation Rules:
+
 • Allowed MIME types: PDF (configurable)
 • Maximum file size: configurable
 • Duplicate detection via SHA-256 checksum
 • Standardized error responses
 ________________________________________
+
 Error Handling:
+
 • Global exception handler
 • Consistent error response format
 • Proper HTTP status codes
 ________________________________________
+
 Observability:
+
 • Structured logging with correlation ID
 • Centralized exception logging
 • Metrics exposed via Actuator
 ________________________________________
+
 Testing Strategy:
+
 Unit Tests
 • Service layer business logic
 • Validation and checksum logic
@@ -84,8 +98,11 @@ Quality Gates
 • JaCoCo ≥ 85% coverage
 • SonarLint: zero critical issues
 ________________________________________
+
 Local Setup:
+
 Prerequisites
+
 • Java 17+
 • Gradle 8+
 Run Application
@@ -95,23 +112,31 @@ http://localhost:8080/swagger-ui.html
 H2 console
 http://localhost:8080/h2-console
 ________________________________________
+
 Configuration:
+
 • File storage path
 • Allowed MIME types
 • Max file size
 • JWT secret and expiry. 
 All configurations are externalized using application.yml.
 ________________________________________
+
 Build & Quality:
+
 ./gradlew clean build
 ./gradlew test
 ./gradlew jacocoTestReport
 ________________________________________
+
 Release Process:
+
 • Feature branches
 • Clean, meaningful commits
 • Release tag created in Git
 • README and Swagger updated
 __________________________________________
+
 Ownership:
+
 This project demonstrates enterprise engineering maturity, clean architecture practices, and strong quality discipline suitable for production systems and technical leadership evaluations.
