@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -15,12 +14,11 @@ import com.banking.creditjourney.document.domain.model.Document;
 
 @Repository
 public class DocumentRepository {
-	private final JdbcTemplate jdbcTemplate;
+
 	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	public DocumentRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+	public DocumentRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		super();
-		this.jdbcTemplate = jdbcTemplate;
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
@@ -32,7 +30,7 @@ public class DocumentRepository {
 		namedParameterJdbcTemplate.update(DocumentsQueries.INSERT_DOCUMENT, params, keyHolder,
 				new String[] { "documentid" });
 
-		//Converts int value to Long and return
+		// Converts int value to Long and return
 		return keyHolder.getKey().longValue();
 	}
 
@@ -41,6 +39,32 @@ public class DocumentRepository {
 		List<Document> documents = namedParameterJdbcTemplate.query(DocumentsQueries.FIND_BY_CHECKSUM, params,
 				new BeanPropertyRowMapper<>(Document.class));
 		return documents.stream().findFirst();
+	}
+
+	// find document(s) by ids
+	public List<Document> findByIds(List<Long> documentIds) {
+
+		MapSqlParameterSource params = new MapSqlParameterSource("documentIds", documentIds);
+
+		return namedParameterJdbcTemplate.query(DocumentsQueries.FIND_BY_IDS, params,
+				new BeanPropertyRowMapper<>(Document.class));
+	}
+
+	// soft delete
+	public int softDeleteByIds(List<Long> documentIds, String deletedBy) {
+
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue("documentIds", documentIds)
+				.addValue("deletedBy", deletedBy);
+
+		return namedParameterJdbcTemplate.update(DocumentsQueries.SOFT_DELETE_BY_IDS, params);
+	}
+
+	// hard delete
+	public int hardDeleteByIds(List<Long> documentIds) {
+
+		MapSqlParameterSource params = new MapSqlParameterSource("documentIds", documentIds);
+
+		return namedParameterJdbcTemplate.update(DocumentsQueries.HARD_DELETE_BY_IDS, params);
 	}
 
 }

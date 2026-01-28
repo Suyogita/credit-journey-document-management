@@ -3,16 +3,19 @@ package com.banking.creditjourney.document.helper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.HexFormat;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.banking.creditjourney.document.domain.model.Document;
-import com.banking.creditjourney.document.dto.DocumentRequest;
+import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.global.constant.DocumentGlobalConstants;
 
 @Component
@@ -65,7 +68,7 @@ public class DocumentHelper {
 		}
 	}
 
-	public Document prepareDocumentObject(String fileStoragePath, DocumentRequest request, MultipartFile file,
+	public Document prepareDocumentObject(String fileStoragePath, CreateDocumentRequest request, MultipartFile file,
 			String checkSumString) {
 		Document document = new Document();
 		document.setUserId(request.getUserId());
@@ -75,6 +78,36 @@ public class DocumentHelper {
 		document.setStoragePath(fileStoragePath);
 		document.setChecksum(checkSumString);
 		return document;
+
+	}
+
+	public void deleteFileFromLocal(String fileStoragePath) {
+		if (fileStoragePath == null || fileStoragePath.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, DocumentGlobalConstants.FILE_PATH_ERROR);
+		}
+		try {
+			Path basePath = Paths.get(storageBasePath).toRealPath(); // configured path
+			Path targetPath = Paths.get(fileStoragePath).toRealPath();
+
+			// Prevents deleting outside storage folder
+			if (!targetPath.startsWith(basePath)) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, DocumentGlobalConstants.FILE_PATH_INVALID);
+			}
+			// File does not exist in path
+			if (!Files.exists(targetPath)) {
+				throw new IllegalStateException(DocumentGlobalConstants.FILE_NOT_FOUND_ON_DISK + targetPath);
+			}
+			// Safety check- must be file , not directory
+			if (!Files.isRegularFile(targetPath)) {
+				throw new IllegalStateException(DocumentGlobalConstants.NOT_REGULAR_FILE_ERROR + targetPath);
+			}
+			// delete file
+			Files.delete(targetPath);
+
+		} catch (IOException ex) {
+
+			throw new RuntimeException(DocumentGlobalConstants.FILE_DELETE_FAILED + fileStoragePath, ex);
+		}
 
 	}
 

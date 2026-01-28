@@ -3,7 +3,7 @@ spring:
     name: document-management
   #Prevents H2 tables from disappering, keeps DB alive during application lifecycle,required for Flayway and JDBC combo
   datasource:
-    url: jdbc:h2:mem:docdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:documentdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sshivare
     password:

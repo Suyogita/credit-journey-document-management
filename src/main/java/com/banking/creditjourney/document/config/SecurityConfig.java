@@ -13,10 +13,17 @@ public class SecurityConfig {
 		http.
 		// Disable CSRF (required for H2 and API's)
 				csrf(csrf -> csrf.disable())
-		// Allow H2 console to be rendered in frames
+				// Allow H2 console to be rendered in frames
 				.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-		//Allow everything as of now
-				.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+				// Allow everything as of now
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/h2-console/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+								"/api/documentmgmt/**")
+						.permitAll()
+
+						.anyRequest().authenticated());
+			
+		// .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 		return http.build();
 	}
 

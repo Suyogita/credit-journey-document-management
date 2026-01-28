@@ -1,4 +1,4 @@
-package com.banking.creditjourney.document.dto;
+package com.banking.creditjourney.document.dto.response;
 
 public class DocumentResponse {
 	private Long documentId;

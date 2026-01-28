@@ -1,14 +1,14 @@
-package com.banking.creditjourney.document.dto;
+package com.banking.creditjourney.document.dto.request;
 
-public class DocumentRequest {
+public class CreateDocumentRequest {
 	private String userId;
 	private String fileName;
 
-	public DocumentRequest() {
+	public CreateDocumentRequest() {
 		super();
 	}
 
-	public DocumentRequest(String userId, String fileName) {
+	public CreateDocumentRequest(String userId, String fileName) {
 		super();
 		this.userId = userId;
 		this.fileName = fileName;
