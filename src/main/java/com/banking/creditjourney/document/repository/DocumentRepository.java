@@ -11,8 +11,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.banking.creditjourney.document.domain.model.Document;
+import com.banking.creditjourney.document.service.DocumentServiceImpl;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
+@Slf4j
 public class DocumentRepository {
 
 	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;

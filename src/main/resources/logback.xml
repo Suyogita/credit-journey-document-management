@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+	<!-- ========================= -->
+	<!-- Application Name -->
+	<!-- ========================= -->
+	<property name="APP_NAME" value="document-management" />
+
+	<!-- ========================= -->
+	<!-- Log file location -->
+	<!-- ========================= -->
+	<property name="LOG_PATH" value="logs" />
+	<property name="LOG_FILE" value="${LOG_PATH}/${APP_NAME}.log" />
+
+	<!-- ========================= -->
+	<!-- Log Pattern -->
+	<!-- ========================= -->
+	<property name="LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{correlationId}] - %msg%n" />
+
+	<!-- ========================= -->
+	<!-- Console Appender -->
+	<!-- ========================= -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- ========================= -->
+	<!-- Rolling File Appender -->
+	<!-- ========================= -->
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE}</file>
+
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- Daily rollover -->
+			<fileNamePattern>${LOG_PATH}/${APP_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<!-- Keep last 30 days -->
+			<maxHistory>30</maxHistory>
+
+			<!-- Optional size cap -->
+			<totalSizeCap>1GB</totalSizeCap>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- ========================= -->
+	<!-- Package Specific Logging -->
+	<!-- ========================= -->
+	<springProfile name="local">
+		<root level="info">
+			<appender-ref ref="RollingFile" />
+			<appender-ref ref="Console" />
+		</root>
+		<logger name="com.banking" level="info" additivity="false">
+			<appender-ref ref="RollingFile" />
+			<appender-ref ref="Console" />
+		</logger>
+		<logger name="com.banking.creditjourney.document" level="debug"
+			additivity="false">
+			<appender-ref ref="RollingFile" />
+			<appender-ref ref="Console" />
+		</logger>
+		<logger name="org.hibernate" level="ERROR" additivity="false">
+			<appender-ref ref="RollingFile" />
+			<appender-ref ref="Console" />
+		</logger>
+	</springProfile>
+
+
+	<!-- Spring Framework noise control -->
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.springframework.web" level="INFO" />
+	<logger name="org.springframework.jdbc.core" level="DEBUG" />
+
+	<!-- Hibernate (if added later) -->
+	<logger name="org.hibernate.SQL" level="WARN" />
+	<logger name="org.hibernate.type.descriptor.sql" level="WARN" />
+
+	<!-- ========================= -->
+	<!-- Root Logger -->
+	<!-- ========================= -->
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>

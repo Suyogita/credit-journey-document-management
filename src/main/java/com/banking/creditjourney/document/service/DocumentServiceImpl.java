@@ -39,6 +39,8 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	public List<DocumentResponse> uploadFiles(List<MultipartFile> files, CreateDocumentRequest request) {
+		log.info("Inside uploadFiles() ");
+		log.info("Starting document upload ");
 		List<DocumentResponse> responses = new ArrayList<>();
 		for (MultipartFile file : files) {
 			// validate the file

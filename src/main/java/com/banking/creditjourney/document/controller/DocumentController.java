@@ -47,20 +47,19 @@ public class DocumentController {
 	 * System and save file metadata into DB.
 	 *
 	 */
-	@Operation(summary = "Upload single or multiple PDF document(s) at Local File System and save file metadata into DB",
-			description = "Upload one or multiple PDF files with metadata")
+	@Operation(summary = "Upload single or multiple PDF document(s) at Local File System and save file metadata into DB", description = "Upload one or multiple PDF files with metadata")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "File uploaded successfully"),
 			@ApiResponse(responseCode = "400", description = "Validation error"),
 			@ApiResponse(responseCode = "409", description = "Duplicate file"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@PostMapping(value = "/documentUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<DocumentResponse>> documentUploads(
-			@Parameter(description = "PDF files to upload", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
-			@RequestPart("files") List<MultipartFile> files,
-			@Parameter(description = "Document metadata", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-			@RequestPart(value = "request", required = false) String requestJson) throws Exception{
-		ObjectMapper mapper=new ObjectMapper();
-		CreateDocumentRequest request=mapper.readValue(requestJson, CreateDocumentRequest.class);
+			@Parameter(description = "PDF files to upload", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @RequestPart("files") List<MultipartFile> files,
+			@Parameter(description = "Document metadata", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) @RequestPart(value = "request", required = false) String requestJson)
+			throws Exception {
+		log.info("Document upload API starts:  /documentUpload");
+		ObjectMapper mapper = new ObjectMapper();
+		CreateDocumentRequest request = mapper.readValue(requestJson, CreateDocumentRequest.class);
 		List<DocumentResponse> resp = documentService.uploadFiles(files, request);
 		return ResponseEntity.ok(resp);
 	}
@@ -75,6 +74,7 @@ public class DocumentController {
 	@DeleteMapping(value = "/documentsDelete")
 	public ResponseEntity<ApiResponseDetails<Void>> documentDelete(@RequestBody DeleteDocumentRequest request,
 			@RequestHeader("X-USER") String user) {
+		log.info("Document delete API starts:  /documentsDelete | request{} | userId{}", request, user);
 		documentService.documentDeletes(request, user);
 		ApiResponseDetails<Void> response = new ApiResponseDetails<>();
 		response.setSuccess(true);
@@ -93,6 +93,7 @@ public class DocumentController {
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@GetMapping(value = "/documentsListing")
 	public ResponseEntity<String> getDocumentList() {
+		log.info("Document listing API starts:  /documentsListing ");
 		return ResponseEntity.ok("List API Skeleton");
 	}
 
@@ -106,6 +107,7 @@ public class DocumentController {
 	@GetMapping(value = "/documents/{documentId}")
 	public ResponseEntity<String> getDocumentMetadata(@PathVariable Long documentId,
 			@RequestHeader("X-USER-ID") String userId) {
+		log.info("Get Document API starts:  /documents/{documentId} | documentId{}", documentId);
 		return ResponseEntity.ok("List API Skeleton");
 	}
 }

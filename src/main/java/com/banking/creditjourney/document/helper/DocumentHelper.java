@@ -19,17 +19,14 @@ import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.global.constant.DocumentGlobalConstants;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class DocumentHelper {
 
 	@Value("${document.storage.base.path}")
 	private String storageBasePath;
-
-	@PostConstruct
-	public void checkPath() {
-		System.out.println("Storage Path= " + storageBasePath);
-	}
 
 	public void validateFileBeforeUpload(MultipartFile file) {
 		if (file.isEmpty()) {
@@ -66,8 +63,6 @@ public class DocumentHelper {
 			String uniqueFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
 			Path fileTarget = Path.of(storageBasePath, uniqueFileName);
-
-			System.out.println("Uploading file to: " + fileTarget.toAbsolutePath());
 
 			file.transferTo(fileTarget.toFile());
 
