@@ -1,0 +1,52 @@
+2026-01-29 18:20:36.184 [background-preinit] INFO  o.h.validator.internal.util.Version [] - HV000001: Hibernate Validator 8.0.1.Final
+2026-01-29 18:20:36.269 [main] INFO  c.b.c.d.DocumentManagementApplication [] - Starting DocumentManagementApplication using Java 21.0.10 with PID 29676 (C:\Workspace_IP\document-managment\bin\main started by suyogita.shivare in C:\Workspace_IP\document-managment)
+2026-01-29 18:20:36.272 [main] INFO  c.b.c.d.DocumentManagementApplication [] - No active profile set, falling back to 1 default profile: "default"
+2026-01-29 18:20:38.297 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate [] - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2026-01-29 18:20:38.338 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate [] - Finished Spring Data repository scanning in 34 ms. Found 0 JDBC repository interfaces.
+2026-01-29 18:20:39.709 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer [] - Tomcat initialized with port 8080 (http)
+2026-01-29 18:20:39.742 [main] INFO  o.a.coyote.http11.Http11NioProtocol [] - Initializing ProtocolHandler ["http-nio-8080"]
+2026-01-29 18:20:39.746 [main] INFO  o.a.catalina.core.StandardService [] - Starting service [Tomcat]
+2026-01-29 18:20:39.747 [main] INFO  o.a.catalina.core.StandardEngine [] - Starting Servlet engine: [Apache Tomcat/10.1.25]
+2026-01-29 18:20:39.975 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] [] - Initializing Spring embedded WebApplicationContext
+2026-01-29 18:20:39.975 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext [] - Root WebApplicationContext: initialization completed in 3617 ms
+2026-01-29 18:20:40.176 [main] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Starting...
+2026-01-29 18:20:41.784 [main] INFO  com.zaxxer.hikari.pool.HikariPool [] - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:documentdb user=SSHIVARE
+2026-01-29 18:20:41.785 [main] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Start completed.
+2026-01-29 18:20:41.807 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration [] - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:documentdb'
+2026-01-29 18:20:42.259 [main] INFO  org.flywaydb.core.FlywayExecutor [] - Database: jdbc:h2:mem:documentdb (H2 2.2)
+2026-01-29 18:20:42.267 [main] WARN  o.f.c.i.database.base.Database [] - Flyway upgrade recommended: H2 2.2.224 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.220.
+2026-01-29 18:20:42.303 [main] INFO  o.f.c.i.s.JdbcTableSchemaHistory [] - Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-01-29 18:20:42.307 [main] INFO  o.f.core.internal.command.DbValidate [] - Successfully validated 1 migration (execution time 00:00.022s)
+2026-01-29 18:20:42.317 [main] INFO  o.f.c.i.s.JdbcTableSchemaHistory [] - Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-01-29 18:20:42.364 [main] INFO  o.f.core.internal.command.DbMigrate [] - Current version of schema "PUBLIC": << Empty Schema >>
+2026-01-29 18:20:42.374 [main] INFO  o.f.core.internal.command.DbMigrate [] - Migrating schema "PUBLIC" to version "1 - init"
+2026-01-29 18:20:42.437 [main] INFO  o.f.core.internal.command.DbMigrate [] - Successfully applied 1 migration to schema "PUBLIC", now at version v1 (execution time 00:00.040s)
+2026-01-29 18:20:42.755 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration [] - 
+
+Using generated security password: 59cbebd9-48b5-4702-bd2d-fa35b503441c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-29 18:20:42.798 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer [] - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-01-29 18:20:43.440 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver [] - Exposing 1 endpoint beneath base path '/actuator'
+2026-01-29 18:20:44.225 [main] INFO  o.a.coyote.http11.Http11NioProtocol [] - Starting ProtocolHandler ["http-nio-8080"]
+2026-01-29 18:20:44.271 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer [] - Tomcat started on port 8080 (http) with context path '/'
+2026-01-29 18:20:44.287 [main] INFO  c.b.c.d.DocumentManagementApplication [] - Started DocumentManagementApplication in 8.917 seconds (process running for 10.718)
+2026-01-29 18:20:44.734 [RMI TCP Connection(4)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] [] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-29 18:20:44.734 [RMI TCP Connection(4)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet [] - Initializing Servlet 'dispatcherServlet'
+2026-01-29 18:20:44.737 [RMI TCP Connection(4)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet [] - Completed initialization in 2 ms
+2026-01-29 18:20:54.354 [http-nio-8080-exec-9] INFO  o.s.api.AbstractOpenApiResource [c4ee7375-c938-45d7-9dcd-d5c8f27b46da] - Init duration for springdoc-openapi is: 688 ms
+2026-01-29 18:22:46.903 [http-nio-8080-exec-6] INFO  c.b.c.d.c.DocumentController [cc0fc857-57dd-4616-b5ac-65321fc66154] - Document upload API starts:  /documentUpload
+2026-01-29 18:22:47.018 [http-nio-8080-exec-6] INFO  c.b.c.d.service.DocumentServiceImpl [cc0fc857-57dd-4616-b5ac-65321fc66154] - Inside uploadFiles() 
+2026-01-29 18:22:47.020 [http-nio-8080-exec-6] INFO  c.b.c.d.service.DocumentServiceImpl [cc0fc857-57dd-4616-b5ac-65321fc66154] - Starting document upload 
+2026-01-29 18:22:47.146 [http-nio-8080-exec-6] DEBUG o.s.jdbc.core.JdbcTemplate [cc0fc857-57dd-4616-b5ac-65321fc66154] - Executing prepared SQL query
+2026-01-29 18:22:47.148 [http-nio-8080-exec-6] DEBUG o.s.jdbc.core.JdbcTemplate [cc0fc857-57dd-4616-b5ac-65321fc66154] - Executing prepared SQL statement [SELECT * FROM documents WHERE checksum= ?
+]
+2026-01-29 18:22:47.183 [http-nio-8080-exec-6] DEBUG o.s.jdbc.core.JdbcTemplate [cc0fc857-57dd-4616-b5ac-65321fc66154] - Executing SQL update and returning generated keys
+2026-01-29 18:22:47.184 [http-nio-8080-exec-6] DEBUG o.s.jdbc.core.JdbcTemplate [cc0fc857-57dd-4616-b5ac-65321fc66154] - Executing prepared SQL statement [INSERT INTO documents(user_id,file_name,file_type,file_size,checksum,storage_path)
+VALUES (?, ?, ?, ?, ?, ?)
+]
+2026-01-29 20:39:41.107 [RMI TCP Connection(143)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin [] - Application shutdown requested.
+2026-01-29 20:39:41.163 [RMI TCP Connection(143)-127.0.0.1] INFO  o.a.coyote.http11.Http11NioProtocol [] - Stopping ProtocolHandler ["http-nio-8080"]
+2026-01-29 20:39:41.255 [RMI TCP Connection(143)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Shutdown initiated...
+2026-01-29 20:39:41.267 [RMI TCP Connection(143)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Shutdown completed.

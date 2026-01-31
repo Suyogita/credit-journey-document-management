@@ -18,6 +18,8 @@ public final class DocumentsQueries {
 	public static final String FIND_BY_IDS = """
 			SELECT * FROM documents
 			WHERE documentid IN (:documentIds)
+			AND user_id = :userId
+			AND is_deleted = FALSE
 			""";
 
 	// soft delete
@@ -25,7 +27,8 @@ public final class DocumentsQueries {
 			UPDATE documents
 			SET is_deleted = true,
 			    deleted_at = CURRENT_TIMESTAMP,
-			    deleted_by = :deletedBy
+			    deleted_by = :deletedBy,
+			    user_id= :deletedBy
 			WHERE documentid IN (:documentIds)
 			""";
 
@@ -40,4 +43,42 @@ public final class DocumentsQueries {
 			INSERT INTO document_audit(documentid,action,performed_by,reason)
 			VALUES (:documentId, :action, :performedBy, :reason)
 			""";
+
+	public static final String LIST_DOCUMENTS = """
+			SELECT documentid AS documentId,
+			       file_name AS fileName,
+			       file_type AS fileType,
+			       file_size AS fileSize,
+			       created_at AS createdAt,
+			       updated_at AS updatedAt
+			FROM documents
+			WHERE user_id = :userId
+			  AND is_deleted = FALSE
+			  AND (:fromDate IS NULL OR created_at >= :fromDate)
+			  AND (:toDate IS NULL OR created_at <= :toDate)
+			  AND (:minSize IS NULL OR file_size >= :minSize)
+			  AND (:maxSize IS NULL OR file_size <= :maxSize)
+			ORDER BY %s %s
+			LIMIT :limit OFFSET :offset
+			""";
+
+	public static final String COUNT_DOCUMENTS = """
+			SELECT COUNT(*)
+			FROM documents
+			WHERE user_id = :userId
+			  AND is_deleted = FALSE
+			  AND (:fromDate IS NULL OR created_at >= :fromDate)
+			  AND (:toDate IS NULL OR created_at <= :toDate)
+			  AND (:minSize IS NULL OR file_size >= :minSize)
+			  AND (:maxSize IS NULL OR file_size <= :maxSize)
+			""";
+
+	public static final String FIND_BY_ID = """
+			SELECT *
+			FROM documents
+			WHERE documentid = :documentId
+			  AND user_id = :userId
+			  AND is_deleted = FALSE
+			""";
+
 }

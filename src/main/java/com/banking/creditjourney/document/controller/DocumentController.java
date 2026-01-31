@@ -1,7 +1,11 @@
 package com.banking.creditjourney.document.controller;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.core.io.Resource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.dto.request.DeleteDocumentRequest;
 import com.banking.creditjourney.document.dto.response.ApiResponseDetails;
+import com.banking.creditjourney.document.dto.response.DocumentListResponse;
+import com.banking.creditjourney.document.dto.response.DocumentPagedResponse;
 import com.banking.creditjourney.document.dto.response.DocumentResponse;
+import com.banking.creditjourney.document.security.UserContext;
 import com.banking.creditjourney.document.service.DocumentServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -56,11 +64,19 @@ public class DocumentController {
 	public ResponseEntity<List<DocumentResponse>> documentUploads(
 			@Parameter(description = "PDF files to upload", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @RequestPart("files") List<MultipartFile> files,
 			@Parameter(description = "Document metadata", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) @RequestPart(value = "request", required = false) String requestJson)
-			throws Exception {
-		log.info("Document upload API starts:  /documentUpload");
+			throws IOException {
+
+		String user = UserContext.getUserId();
+		log.info("Document upload API starts:  /documentUpload | userId={} | filecount={}", user, files.size());
+
 		ObjectMapper mapper = new ObjectMapper();
-		CreateDocumentRequest request = mapper.readValue(requestJson, CreateDocumentRequest.class);
-		List<DocumentResponse> resp = documentService.uploadFiles(files, request);
+		CreateDocumentRequest request = null;
+		if (requestJson != null && !requestJson.isBlank()) {
+			request = mapper.readValue(requestJson, CreateDocumentRequest.class);
+		}
+
+		List<DocumentResponse> resp = documentService.uploadFiles(files, request, user);
+		log.info("Upload API completed | userId={}", user);
 		return ResponseEntity.ok(resp);
 	}
 
@@ -72,8 +88,8 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "PDF document(s) deleted successfully"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@DeleteMapping(value = "/documentsDelete")
-	public ResponseEntity<ApiResponseDetails<Void>> documentDelete(@RequestBody DeleteDocumentRequest request,
-			@RequestHeader("X-USER") String user) {
+	public ResponseEntity<ApiResponseDetails<Void>> documentDelete(@RequestBody DeleteDocumentRequest request) {
+		String user = UserContext.getUserId();
 		log.info("Document delete API starts:  /documentsDelete | request{} | userId{}", request, user);
 		documentService.documentDeletes(request, user);
 		ApiResponseDetails<Void> response = new ApiResponseDetails<>();
@@ -92,22 +108,35 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = ""),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@GetMapping(value = "/documentsListing")
-	public ResponseEntity<String> getDocumentList() {
+	public ResponseEntity<DocumentPagedResponse<DocumentListResponse>> listDocuments(
+			@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) int size,
+			@RequestParam(defaultValue = "created_at") String sortBy,
+			@RequestParam(defaultValue = "DESC") String sortDir,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+			@RequestParam(required = false) Long minSize, @RequestParam(required = false) Long maxSize) {
 		log.info("Document listing API starts:  /documentsListing ");
-		return ResponseEntity.ok("List API Skeleton");
+		String user = UserContext.getUserId();
+		log.info("Listing documents for user{}", user);
+
+		return ResponseEntity.ok(
+				documentService.listDocuments(user, page, size, sortBy, sortDir, fromDate, toDate, minSize, maxSize));
 	}
 
 	/*
-	 * REST endpoint for document retrieval depending on documentid with validation
+	 * REST endpoint for document retrieval(streaming) depending on documentid with
+	 * validation(ownership)
 	 *
 	 */
 	@Operation(summary = "Get PDF document by documentid", description = "Retrieve single document metadata for logged-in user")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Document fetched successfully"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
-	@GetMapping(value = "/documents/{documentId}")
-	public ResponseEntity<String> getDocumentMetadata(@PathVariable Long documentId,
-			@RequestHeader("X-USER-ID") String userId) {
-		log.info("Get Document API starts:  /documents/{documentId} | documentId{}", documentId);
-		return ResponseEntity.ok("List API Skeleton");
+	@GetMapping(value = "/documentsDownload/{documentId}")
+	public ResponseEntity<Resource> downloadDocument(@PathVariable Long documentId) {
+
+		String user = UserContext.getUserId();
+		log.info("Get Document API /documents/{documentId} starts for userId{}", user);
+
+		return documentService.downloadDocument(documentId, user);
 	}
 }

@@ -13,7 +13,13 @@ CREATE TABLE documents (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_documents_user_id ON documents(user_id);
+
+CREATE INDEX idx_documents_created_at ON documents(created_at);
+
 CREATE INDEX idx_documents_checksum ON documents(checksum);
+
+CREATE INDEX idx_documents_file_size ON documents(file_size);
 
 CREATE INDEX idx_documents_deleted ON documents(is_deleted);
 

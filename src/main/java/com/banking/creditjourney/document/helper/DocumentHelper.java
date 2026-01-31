@@ -6,19 +6,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.HexFormat;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.banking.creditjourney.document.domain.model.Document;
 import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.global.constant.DocumentGlobalConstants;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -60,9 +56,7 @@ public class DocumentHelper {
 
 			Files.createDirectories(Path.of(storageBasePath));
 
-			String uniqueFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-			Path fileTarget = Path.of(storageBasePath, uniqueFileName);
+			Path fileTarget = Path.of(storageBasePath, file.getOriginalFilename());
 
 			file.transferTo(fileTarget.toFile());
 
@@ -73,9 +67,9 @@ public class DocumentHelper {
 	}
 
 	public Document prepareDocumentObject(String fileStoragePath, CreateDocumentRequest request, MultipartFile file,
-			String checkSumString) {
+			String checkSumString, String user) {
 		Document document = new Document();
-		document.setUserId(request.getUserId());
+		document.setUserId(user);
 		document.setFileName(file.getOriginalFilename());
 		document.setFileType(file.getContentType());
 		document.setFileSize(file.getSize());
@@ -85,17 +79,22 @@ public class DocumentHelper {
 
 	}
 
-	public void deleteFileFromLocal(String fileStoragePath) {
+	public void deleteFileFromLocal(String fileStoragePath, String storageBasePath) {
+
 		if (fileStoragePath == null || fileStoragePath.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, DocumentGlobalConstants.FILE_PATH_ERROR);
+			throw new IllegalStateException(DocumentGlobalConstants.FILE_PATH_ERROR);
+		}
+
+		if (storageBasePath == null || storageBasePath.isBlank()) {
+			throw new IllegalStateException(DocumentGlobalConstants.FILE_PATH_ERROR);
 		}
 		try {
-			Path basePath = Paths.get(storageBasePath).toRealPath(); // configured path
-			Path targetPath = Paths.get(fileStoragePath).toRealPath();
+			Path basePath = Paths.get(storageBasePath).toAbsolutePath().normalize(); // configured path
+			Path targetPath = Paths.get(fileStoragePath).toAbsolutePath().normalize();
 
 			// Prevents deleting outside storage folder
 			if (!targetPath.startsWith(basePath)) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN, DocumentGlobalConstants.FILE_PATH_INVALID);
+				throw new IllegalStateException(DocumentGlobalConstants.FILE_PATH_INVALID);
 			}
 			// File does not exist in path
 			if (!Files.exists(targetPath)) {
@@ -107,10 +106,11 @@ public class DocumentHelper {
 			}
 			// delete file
 			Files.delete(targetPath);
+			log.info("File deleted successfully:{}", targetPath);
 
 		} catch (IOException ex) {
-
-			throw new RuntimeException(DocumentGlobalConstants.FILE_DELETE_FAILED + fileStoragePath, ex);
+			log.error("File deletion failed:{}", fileStoragePath, ex);
+			throw new IllegalStateException(DocumentGlobalConstants.FILE_DELETE_FAILED + fileStoragePath, ex);
 		}
 
 	}
