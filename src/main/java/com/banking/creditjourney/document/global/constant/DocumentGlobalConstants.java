@@ -18,5 +18,8 @@ public class DocumentGlobalConstants {
 	public static final String FILE_PATH_INVALID = "File path outside allowed storage directory";
 	public static final String DOCUMENT_NOT_BELONGS_TO_USER = "One or more document(s) do not belong to the user or are already deleted";
 	public static final String INVALID_SORTBY = "Invalid sortBy field: ";
-	public static final String INVALID_SORTDIR ="Invalid sortDir: ";
+	public static final String INVALID_SORTDIR = "Invalid sortDir: ";
+	public static final String INVALID_DELETETYPE = "Invalid deleteType. Allowed exact values: SOFT,HARD";
+	public static final String DOCUMENT_DELETED_ALREADY = "All requested documents are SOFT deleted already";
+	public static final String DOCUMENT_SOFT_FIRST_BEFORE_HARD = "Document must be soft deleted before hard delete";
 }

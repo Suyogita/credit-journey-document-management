@@ -16,11 +16,19 @@ public final class DocumentsQueries {
 			""";
 
 	public static final String FIND_BY_IDS = """
-			SELECT * FROM documents
+			SELECT
+			 documentid,
+			 user_id,
+			 file_name,
+			 file_type,
+			 file_size,
+			 checksum,
+			 storage_path,
+			 is_deleted AS file_deleted,created_at,
+			 updated_at FROM documents
 			WHERE documentid IN (:documentIds)
 			AND user_id = :userId
-			AND is_deleted = FALSE
-			""";
+						""";
 
 	// soft delete
 	public static final String SOFT_DELETE_BY_IDS = """
@@ -63,7 +71,7 @@ public final class DocumentsQueries {
 			""";
 
 	public static final String COUNT_DOCUMENTS = """
-			SELECT COUNT(*)
+			SELECT COUNT(1)
 			FROM documents
 			WHERE user_id = :userId
 			  AND is_deleted = FALSE

@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.banking.creditjourney.document.domain.model.Document;
 import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.dto.request.DeleteDocumentRequest;
+import com.banking.creditjourney.document.dto.request.DocumentListRequest;
 import com.banking.creditjourney.document.dto.response.DeleteType;
+import com.banking.creditjourney.document.dto.response.DocumentDeleteResponse;
 import com.banking.creditjourney.document.dto.response.DocumentListResponse;
 import com.banking.creditjourney.document.dto.response.DocumentPagedResponse;
 import com.banking.creditjourney.document.dto.response.DocumentResponse;
@@ -30,7 +33,7 @@ import com.banking.creditjourney.document.helper.DocumentHelper;
 import com.banking.creditjourney.document.repository.AuditRepository;
 import com.banking.creditjourney.document.repository.DocumentRepository;
 
-import jakarta.validation.constraints.Min;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -88,16 +91,20 @@ public class DocumentServiceImpl implements DocumentService {
 
 	@Override
 	@Transactional
-	public void documentDeletes(DeleteDocumentRequest request, String user) {
+	public DocumentDeleteResponse documentDeletes(DeleteDocumentRequest request, String user) {
+		log.info("Delete document(s) start: deleteDocumentRequest={} | user={} |deleteType={}", request, user,
+				request.getDeleteType());
 
-		// Log.info("Delete document(s) start: deleteDocumentRequest={}", request);
+		List<Document> deletedDocs;
+		int deletedCount = 0;
 
 		List<Long> documentIds = request.getDocumentIds();
 
-		// Fetch documentsonly for logged-in user
+		// Fetch documents only for logged-in user
 		List<Document> documents = documentRepository.findByIds(documentIds, user);
+		log.info("Fetched documents from DB= | requested={} | found={} ", request.getDocumentIds().size(),
+				documents.size());
 
-		// Validate ownership & existence
 		if (documents.isEmpty()) {
 			throw new IllegalArgumentException(DocumentGlobalConstants.NO_DOCUMENT_FOUND);
 		}
@@ -107,41 +114,87 @@ public class DocumentServiceImpl implements DocumentService {
 			throw new IllegalArgumentException(DocumentGlobalConstants.DOCUMENT_NOT_BELONGS_TO_USER);
 		}
 
-		// Audit trail first
-		for (Document document : documents) {
-			auditRepository.saveAudit(document.getDocumentId(), request.getDeleteType().name() + "_DELETE", user,
-					request.getReason());
-		}
-		// Perform soft delete
+		// split documents
+		List<Document> activeOrNonDeletedDocs = documents.stream().filter(doc -> !doc.isFileDeleted()).toList();
+
+		List<Document> alreadySoftDeletedDocs = documents.stream().filter(Document::isFileDeleted).toList();
+
+		log.info("Document split| active(non-deleted)={} | softDeleted=+{} ", activeOrNonDeletedDocs.size(),
+				alreadySoftDeletedDocs.size());
+
 		if (request.getDeleteType() == DeleteType.SOFT) {
-			documentRepository.softDeleteByIds(documentIds, user);
-		} else {
+
+			log.info("Soft delete initiared..");
+			if (activeOrNonDeletedDocs.isEmpty()) {
+				throw new IllegalArgumentException(DocumentGlobalConstants.DOCUMENT_DELETED_ALREADY);
+			}
+			// Audit trail first, only active documents
+			for (Document document : activeOrNonDeletedDocs) {
+				auditRepository.saveAudit(document.getDocumentId(), request.getDeleteType().name() + "_DELETE", user,
+						request.getReason());
+			}
+
+			List<Long> activeIds = activeOrNonDeletedDocs.stream().map(Document::getDocumentId).toList();
+			log.info("Soft delete initiared for DB..");
+			deletedCount = documentRepository.softDeleteByIds(activeIds, user);
+
+			deletedDocs = activeOrNonDeletedDocs;
+
+		} else if (request.getDeleteType() == DeleteType.HARD) {
+
+			log.info("Hard delete initiated..");
+
+			if (alreadySoftDeletedDocs.isEmpty()) {
+				throw new IllegalArgumentException(DocumentGlobalConstants.DOCUMENT_SOFT_FIRST_BEFORE_HARD);
+			}
+
+			log.info("Audit trail initiared..");
+			// Audit trail first
+			for (Document document : alreadySoftDeletedDocs) {
+				auditRepository.saveAudit(document.getDocumentId(), request.getDeleteType().name() + "_DELETE", user,
+						request.getReason());
+			}
+
+			log.info("Hard delete from file system initiated..");
 			// HARD delete → file system first
-			for (Document document : documents) {
+			List<Long> activeIds = alreadySoftDeletedDocs.stream().map(Document::getDocumentId).toList();
+			for (Document document : alreadySoftDeletedDocs) {
 				documentHelper.deleteFileFromLocal(document.getStoragePath(), storageBasePath);
 			}
+
+			log.info("Hard delete from DB initiated..");
 			// HARD delete → db
-			documentRepository.hardDeleteByIds(documentIds);
+			deletedCount = documentRepository.hardDeleteByIds(activeIds);
+
+			deletedDocs = alreadySoftDeletedDocs;
+
+			log.info("Hard delete fcompleted | user={} | deletedCount={}", user, deletedCount);
+		} else {
+			throw new IllegalArgumentException(DocumentGlobalConstants.INVALID_DELETETYPE);
 		}
+
+		return new DocumentDeleteResponse(deletedDocs.stream().map(Document::getDocumentId).toList(),
+				request.getDeleteType(), deletedCount, user, LocalDateTime.now());
 	}
 
 	@Override
-	public DocumentPagedResponse<DocumentListResponse> listDocuments(String user, @Min(0) int page, @Min(1) int size,
-			String sortBy, String sortDir, LocalDate fromDate, LocalDate toDate, Long minSize, Long maxSize) {
+	public DocumentPagedResponse<DocumentListResponse> listDocuments(String user, DocumentListRequest request) {
 
-		log.info("Listing documents | userId{} | page{} | size{}", user, page, size);
+		log.info("Listing documents | userId{} | page{} | size{}", user, request.getPage(), request.getSize());
 
 		// essential for breaking large records into smaller, manageable chunks
 		// (pages), which improves page loading performance and user experience
-		int offset = page * size;
+		int offset = request.getPage() * request.getSize();
 
 		// fetch documents
-		List<DocumentListResponse> documents = documentRepository.listDocuments(user, fromDate, toDate, minSize,
-				maxSize, sortBy, sortDir, size, offset);
+		List<DocumentListResponse> documents = documentRepository.listDocuments(user, request.getFromDate(),
+				request.getToDate(), request.getMinSize(), request.getMaxSize(), request.getSortBy(),
+				request.getSortDir(), request.getSize(), offset);
 
-		long total = documentRepository.countDocuments(user, fromDate, toDate, minSize, maxSize);
+		long total = documentRepository.countDocuments(user, request.getFromDate(), request.getToDate(),
+				request.getMinSize(), request.getMaxSize());
 
-		return DocumentPagedResponse.<DocumentListResponse>builder().content(documents).page(page).size(size)
+		return DocumentPagedResponse.<DocumentListResponse>builder().content(documents).page(request.getPage()).size(request.getSize())
 				.totalElements(total).build();
 	}
 

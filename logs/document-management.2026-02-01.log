@@ -1,0 +1,236 @@
+2026-02-01 01:12:00.904 [background-preinit] INFO  o.h.validator.internal.util.Version [] - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-01 01:12:00.944 [main] INFO  c.b.c.d.DocumentManagementApplication [] - Starting DocumentManagementApplication using Java 21.0.10 with PID 28864 (C:\Workspace_IP\document-managment\bin\main started by suyogita.shivare in C:\Workspace_IP\document-managment)
+2026-02-01 01:12:00.945 [main] INFO  c.b.c.d.DocumentManagementApplication [] - No active profile set, falling back to 1 default profile: "default"
+2026-02-01 01:12:01.974 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate [] - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2026-02-01 01:12:02.005 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate [] - Finished Spring Data repository scanning in 24 ms. Found 0 JDBC repository interfaces.
+2026-02-01 01:12:02.554 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer [] - Tomcat initialized with port 8080 (http)
+2026-02-01 01:12:02.570 [main] INFO  o.a.coyote.http11.Http11NioProtocol [] - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-01 01:12:02.572 [main] INFO  o.a.catalina.core.StandardService [] - Starting service [Tomcat]
+2026-02-01 01:12:02.572 [main] INFO  o.a.catalina.core.StandardEngine [] - Starting Servlet engine: [Apache Tomcat/10.1.25]
+2026-02-01 01:12:02.664 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] [] - Initializing Spring embedded WebApplicationContext
+2026-02-01 01:12:02.665 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext [] - Root WebApplicationContext: initialization completed in 1677 ms
+2026-02-01 01:12:02.769 [main] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Starting...
+2026-02-01 01:12:03.068 [main] INFO  com.zaxxer.hikari.pool.HikariPool [] - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:documentdb user=SSHIVARE
+2026-02-01 01:12:03.070 [main] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Start completed.
+2026-02-01 01:12:03.081 [main] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration [] - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:documentdb'
+2026-02-01 01:12:03.390 [main] INFO  org.flywaydb.core.FlywayExecutor [] - Database: jdbc:h2:mem:documentdb (H2 2.2)
+2026-02-01 01:12:03.398 [main] WARN  o.f.c.i.database.base.Database [] - Flyway upgrade recommended: H2 2.2.224 is newer than this version of Flyway and support has not been tested. The latest supported version of H2 is 2.2.220.
+2026-02-01 01:12:03.426 [main] INFO  o.f.c.i.s.JdbcTableSchemaHistory [] - Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-02-01 01:12:03.428 [main] INFO  o.f.core.internal.command.DbValidate [] - Successfully validated 1 migration (execution time 00:00.015s)
+2026-02-01 01:12:03.436 [main] INFO  o.f.c.i.s.JdbcTableSchemaHistory [] - Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-02-01 01:12:03.468 [main] INFO  o.f.core.internal.command.DbMigrate [] - Current version of schema "PUBLIC": << Empty Schema >>
+2026-02-01 01:12:03.476 [main] INFO  o.f.core.internal.command.DbMigrate [] - Migrating schema "PUBLIC" to version "1 - init"
+2026-02-01 01:12:03.502 [main] INFO  o.f.core.internal.command.DbMigrate [] - Successfully applied 1 migration to schema "PUBLIC", now at version v1 (execution time 00:00.014s)
+2026-02-01 01:12:03.702 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration [] - 
+
+Using generated security password: 3e4d94ab-4684-4625-a085-2a1bd5ff0315
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-01 01:12:03.729 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer [] - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-02-01 01:12:04.101 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver [] - Exposing 1 endpoint beneath base path '/actuator'
+2026-02-01 01:12:04.608 [main] INFO  o.a.coyote.http11.Http11NioProtocol [] - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-01 01:12:04.633 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer [] - Tomcat started on port 8080 (http) with context path '/'
+2026-02-01 01:12:04.644 [main] INFO  c.b.c.d.DocumentManagementApplication [] - Started DocumentManagementApplication in 4.086 seconds (process running for 4.987)
+2026-02-01 01:12:05.121 [RMI TCP Connection(4)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] [] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-01 01:12:05.121 [RMI TCP Connection(4)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet [] - Initializing Servlet 'dispatcherServlet'
+2026-02-01 01:12:05.122 [RMI TCP Connection(4)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet [] - Completed initialization in 1 ms
+2026-02-01 01:13:05.144 [http-nio-8080-exec-9] INFO  o.s.api.AbstractOpenApiResource [109288e2-eb6d-473a-b9a8-72ef3bddf833] - Init duration for springdoc-openapi is: 500 ms
+2026-02-01 01:17:39.406 [http-nio-8080-exec-8] INFO  c.b.c.d.c.DocumentController [90e73bec-0a39-411d-8d06-06f699581909] - Document upload API starts:  /documentUpload | userId=suyogita.shivare@accenture.com | filecount=1
+2026-02-01 01:17:39.423 [http-nio-8080-exec-8] ERROR c.b.c.d.e.GlobalExceptionHandler [90e73bec-0a39-411d-8d06-06f699581909] - Unhandled exception
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "userId" (class com.banking.creditjourney.document.dto.request.CreateDocumentRequest), not marked as ignorable (one known property: "fileName"])
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 12] (through reference chain: com.banking.creditjourney.document.dto.request.CreateDocumentRequest["userId"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:61)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleUnknownProperty(DeserializationContext.java:1153)
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:2241)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1793)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1771)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:316)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4905)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3848)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3816)
+	at com.banking.creditjourney.document.controller.DocumentController.documentUploads(DocumentController.java:75)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at com.banking.creditjourney.document.security.CorrelationIdFilter.doFilterInternal(CorrelationIdFilter.java:31)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340)
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:181)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at com.banking.creditjourney.document.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:34)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:107)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-01 01:24:03.143 [http-nio-8080-exec-10] INFO  c.b.c.d.c.DocumentController [d57b208a-e7a4-465b-ba2a-b2009785194a] - Document upload API starts:  /documentUpload | userId=suyogita.shivare@accenture.com | filecount=1
+2026-02-01 01:24:03.161 [http-nio-8080-exec-10] INFO  c.b.c.d.service.DocumentServiceImpl [d57b208a-e7a4-465b-ba2a-b2009785194a] - Inside uploadFiles() 
+2026-02-01 01:24:03.161 [http-nio-8080-exec-10] INFO  c.b.c.d.service.DocumentServiceImpl [d57b208a-e7a4-465b-ba2a-b2009785194a] - Starting document upload 
+2026-02-01 01:24:03.192 [http-nio-8080-exec-10] DEBUG o.s.jdbc.core.JdbcTemplate [d57b208a-e7a4-465b-ba2a-b2009785194a] - Executing prepared SQL query
+2026-02-01 01:24:03.192 [http-nio-8080-exec-10] DEBUG o.s.jdbc.core.JdbcTemplate [d57b208a-e7a4-465b-ba2a-b2009785194a] - Executing prepared SQL statement [SELECT * FROM documents WHERE checksum= ?
+]
+2026-02-01 01:24:03.208 [http-nio-8080-exec-10] DEBUG o.s.jdbc.core.JdbcTemplate [d57b208a-e7a4-465b-ba2a-b2009785194a] - Executing SQL update and returning generated keys
+2026-02-01 01:24:03.209 [http-nio-8080-exec-10] DEBUG o.s.jdbc.core.JdbcTemplate [d57b208a-e7a4-465b-ba2a-b2009785194a] - Executing prepared SQL statement [INSERT INTO documents(user_id,file_name,file_type,file_size,checksum,storage_path)
+VALUES (?, ?, ?, ?, ?, ?)
+]
+2026-02-01 01:24:03.225 [http-nio-8080-exec-10] INFO  c.b.c.d.c.DocumentController [d57b208a-e7a4-465b-ba2a-b2009785194a] - Upload API completed | userId=suyogita.shivare@accenture.com
+2026-02-01 01:30:44.530 [http-nio-8080-exec-3] INFO  c.b.c.d.c.DocumentController [1a4e6f28-4475-49d6-8f58-962d54756e04] - Document delete API starts:  /documentsDelete | requestDeleteDocumentRequest(documentIds=[1], deleteType=SOFT, reason=Testing delete) | userIdsuyogita.shivare@accenture.com
+2026-02-01 01:30:44.530 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.JdbcTemplate [1a4e6f28-4475-49d6-8f58-962d54756e04] - Executing prepared SQL query
+2026-02-01 01:30:44.530 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.JdbcTemplate [1a4e6f28-4475-49d6-8f58-962d54756e04] - Executing prepared SQL statement [SELECT * FROM documents
+WHERE documentid IN (?)
+AND user_id = ?
+AND is_deleted = FALSE
+]
+2026-02-01 01:30:44.530 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'DOCUMENTID' to property 'documentId' of type 'java.lang.Long'
+2026-02-01 01:30:44.530 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'USER_ID' to property 'userId' of type 'java.lang.String'
+2026-02-01 01:30:44.546 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'FILE_NAME' to property 'fileName' of type 'java.lang.String'
+2026-02-01 01:30:44.547 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'FILE_TYPE' to property 'fileType' of type 'java.lang.String'
+2026-02-01 01:30:44.547 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'FILE_SIZE' to property 'fileSize' of type 'java.lang.Long'
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'CHECKSUM' to property 'checksum' of type 'java.lang.String'
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'STORAGE_PATH' to property 'storagePath' of type 'java.lang.String'
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'CREATED_AT' to property 'createdAt' of type 'java.time.LocalDateTime'
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.BeanPropertyRowMapper [1a4e6f28-4475-49d6-8f58-962d54756e04] - Mapping column 'UPDATED_AT' to property 'updatedAt' of type 'java.time.LocalDateTime'
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.JdbcTemplate [1a4e6f28-4475-49d6-8f58-962d54756e04] - Executing prepared SQL update
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.JdbcTemplate [1a4e6f28-4475-49d6-8f58-962d54756e04] - Executing prepared SQL statement [INSERT INTO document_audit(documentid,action,performed_by,reason)
+VALUES (?, ?, ?, ?)
+]
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.JdbcTemplate [1a4e6f28-4475-49d6-8f58-962d54756e04] - Executing prepared SQL update
+2026-02-01 01:30:44.548 [http-nio-8080-exec-3] DEBUG o.s.jdbc.core.JdbcTemplate [1a4e6f28-4475-49d6-8f58-962d54756e04] - Executing prepared SQL statement [UPDATE documents
+SET is_deleted = true,
+    deleted_at = CURRENT_TIMESTAMP,
+    deleted_by = ?,
+    user_id= ?
+WHERE documentid IN (?)
+]
+2026-02-01 01:31:59.622 [RMI TCP Connection(25)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin [] - Application shutdown requested.
+2026-02-01 01:31:59.626 [RMI TCP Connection(25)-127.0.0.1] INFO  o.a.coyote.http11.Http11NioProtocol [] - Stopping ProtocolHandler ["http-nio-8080"]
+2026-02-01 01:31:59.645 [RMI TCP Connection(25)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Shutdown initiated...
+2026-02-01 01:31:59.648 [RMI TCP Connection(25)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource [] - HikariPool-1 - Shutdown completed.

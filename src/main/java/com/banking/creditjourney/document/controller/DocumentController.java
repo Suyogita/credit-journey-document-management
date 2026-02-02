@@ -1,11 +1,10 @@
 package com.banking.creditjourney.document.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.core.io.Resource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,14 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.dto.request.DeleteDocumentRequest;
+import com.banking.creditjourney.document.dto.request.DocumentListRequest;
 import com.banking.creditjourney.document.dto.response.ApiResponseDetails;
+import com.banking.creditjourney.document.dto.response.DocumentDeleteResponse;
 import com.banking.creditjourney.document.dto.response.DocumentListResponse;
 import com.banking.creditjourney.document.dto.response.DocumentPagedResponse;
 import com.banking.creditjourney.document.dto.response.DocumentResponse;
@@ -35,7 +35,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -88,14 +87,17 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "PDF document(s) deleted successfully"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@DeleteMapping(value = "/documentsDelete")
-	public ResponseEntity<ApiResponseDetails<Void>> documentDelete(@RequestBody DeleteDocumentRequest request) {
+	public ResponseEntity<ApiResponseDetails<DocumentDeleteResponse>> documentDelete(
+			@RequestBody DeleteDocumentRequest request) {
 		String user = UserContext.getUserId();
-		log.info("Document delete API starts:  /documentsDelete | request{} | userId{}", request, user);
-		documentService.documentDeletes(request, user);
-		ApiResponseDetails<Void> response = new ApiResponseDetails<>();
+		log.info("Document delete API starts:  /documentsDelete | request={} | userId={}", request, user);
+
+		DocumentDeleteResponse documentDeleteResponse = documentService.documentDeletes(request, user);
+
+		ApiResponseDetails<DocumentDeleteResponse> response = new ApiResponseDetails<>();
 		response.setSuccess(true);
 		response.setMessage("Document(s) deleted successfully");
-		response.setData(null);
+		response.setData(documentDeleteResponse);
 		return ResponseEntity.ok(response);
 
 	}
@@ -105,22 +107,15 @@ public class DocumentController {
 	 * pagination,sorting,filtering,user isolation
 	 */
 	@Operation(summary = "List PDF documents", description = "Includes Pagination,Sorting and Filtering")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = ""),
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Document fetched successfully"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@GetMapping(value = "/documentsListing")
 	public ResponseEntity<DocumentPagedResponse<DocumentListResponse>> listDocuments(
-			@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) int size,
-			@RequestParam(defaultValue = "created_at") String sortBy,
-			@RequestParam(defaultValue = "DESC") String sortDir,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-			@RequestParam(required = false) Long minSize, @RequestParam(required = false) Long maxSize) {
-		log.info("Document listing API starts:  /documentsListing ");
+			@ParameterObject DocumentListRequest request) {
 		String user = UserContext.getUserId();
-		log.info("Listing documents for user{}", user);
-
-		return ResponseEntity.ok(
-				documentService.listDocuments(user, page, size, sortBy, sortDir, fromDate, toDate, minSize, maxSize));
+		log.info("Document listing API starts:  /documentsListing |userId={} | page={} | size={}", user,
+				request.getPage(), request.getSize());
+		return ResponseEntity.ok(documentService.listDocuments(user, request));
 	}
 
 	/*
@@ -132,7 +127,8 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Document fetched successfully"),
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@GetMapping(value = "/documentsDownload/{documentId}")
-	public ResponseEntity<Resource> downloadDocument(@PathVariable Long documentId) {
+	public ResponseEntity<Resource> downloadDocument(
+			@Parameter(description = "Unique identifier of the document, required=true") @PathVariable("documentId") Long documentId) {
 
 		String user = UserContext.getUserId();
 		log.info("Get Document API /documents/{documentId} starts for userId{}", user);

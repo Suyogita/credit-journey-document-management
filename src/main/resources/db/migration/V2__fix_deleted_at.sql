@@ -1,0 +1,2 @@
+ALTER TABLE documents
+ALTER COLUMN deleted_at DROP DEFAULT;

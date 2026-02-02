@@ -38,3 +38,8 @@ CREATE TABLE document_audit (
     performed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     reason VARCHAR(500)
     );
+    
+
+    
+    
+    
