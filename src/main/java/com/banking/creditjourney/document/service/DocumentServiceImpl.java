@@ -3,7 +3,6 @@ package com.banking.creditjourney.document.service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,6 @@ import com.banking.creditjourney.document.helper.DocumentHelper;
 import com.banking.creditjourney.document.repository.AuditRepository;
 import com.banking.creditjourney.document.repository.DocumentRepository;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -194,22 +193,33 @@ public class DocumentServiceImpl implements DocumentService {
 		long total = documentRepository.countDocuments(user, request.getFromDate(), request.getToDate(),
 				request.getMinSize(), request.getMaxSize());
 
-		return DocumentPagedResponse.<DocumentListResponse>builder().content(documents).page(request.getPage()).size(request.getSize())
-				.totalElements(total).build();
+		return DocumentPagedResponse.<DocumentListResponse>builder().content(documents).page(request.getPage())
+				.size(request.getSize()).totalElements(total).build();
 	}
 
 	@Override
 	public ResponseEntity<Resource> downloadDocument(Long documentId, String user) {
 
-		Document document = documentRepository.findDocumentById(documentId, user);
+		log.debug("downloadDocument() starts | userId={} | documentId={} ", user, documentId);
+
+		Document document = documentRepository.findDocumentById(documentId, user)
+				.orElseThrow(() -> new EmptyResultDataAccessException("Document not found", 1));
+
+		if (document.isFileDeleted()) {
+			log.warn("Document is soft deleted | documentId={} ", documentId);
+			throw new IllegalArgumentException(DocumentGlobalConstants.DOCUMENT_DELETED);
+		}
 
 		Path filePath = Paths.get(document.getStoragePath());
 		if (!Files.exists(filePath)) {
+			log.error("File not found on disk | path={}", filePath);
 			throw new IllegalArgumentException(DocumentGlobalConstants.FILE_NOT_FOUND_ON_DISK);
 		}
 
 		Resource resource = new FileSystemResource(filePath);
+		log.info("Document download successful | documentId={} | fileName={}", documentId, document.getFileName());
 
+		// it will allow user to download the file on UI
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + document.getFileName() + "\"")
 				.contentLength(document.getFileSize()).body(resource);

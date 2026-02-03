@@ -22,4 +22,5 @@ public class DocumentGlobalConstants {
 	public static final String INVALID_DELETETYPE = "Invalid deleteType. Allowed exact values: SOFT,HARD";
 	public static final String DOCUMENT_DELETED_ALREADY = "All requested documents are SOFT deleted already";
 	public static final String DOCUMENT_SOFT_FIRST_BEFORE_HARD = "Document must be soft deleted before hard delete";
+	public static final String DOCUMENT_DELETED = "Document is deleted already";
 }

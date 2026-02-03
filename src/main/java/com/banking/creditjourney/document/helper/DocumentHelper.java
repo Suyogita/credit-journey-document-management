@@ -29,10 +29,12 @@ public class DocumentHelper {
 			throw new RuntimeException(DocumentGlobalConstants.FILE_EMPTY);
 		}
 
+		//MIME file validation Purpose: To prevent user from uploading virus or unwanted file- security check
 		if (!"application/pdf".equalsIgnoreCase(file.getContentType())) {
 			throw new RuntimeException(DocumentGlobalConstants.ONLY_PDF_FILE);
 		}
 
+		//Size validation. Maximum 5MB file can be uploaded
 		if (file.getSize() > 5 * 1024 * 1024) {
 			throw new RuntimeException(DocumentGlobalConstants.FILE_SIZE_5MB);
 		}

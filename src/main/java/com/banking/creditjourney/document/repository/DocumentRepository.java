@@ -117,12 +117,16 @@ public class DocumentRepository {
 		return namedParameterJdbcTemplate.queryForObject(DocumentsQueries.COUNT_DOCUMENTS, params, Long.class);
 	}
 
-	public Document findDocumentById(Long documentId, String user) {
+	public Optional<Document> findDocumentById(Long documentId, String user) {
+
+		log.info("findDocumentById() starts ");
+
 		MapSqlParameterSource params = new MapSqlParameterSource().addValue("documentId", documentId).addValue("userId",
 				user);
 
-		return namedParameterJdbcTemplate.queryForObject(DocumentsQueries.FIND_BY_ID, params,
-				BeanPropertyRowMapper.newInstance(Document.class));
+		return namedParameterJdbcTemplate
+				.query(DocumentsQueries.FIND_BY_ID, params, BeanPropertyRowMapper.newInstance(Document.class)).stream()
+				.findFirst();
 
 	}
 

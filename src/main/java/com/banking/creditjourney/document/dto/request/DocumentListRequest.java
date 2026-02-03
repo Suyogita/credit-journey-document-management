@@ -27,17 +27,17 @@ public class DocumentListRequest {
     @Schema(description = "Sort direction (ASC or DESC)", example = "DESC")
     private String sortDir = "DESC";
 
-    @Schema(description = "Filter documents created from this date (ISO format)")
+    @Schema(description = "Filter documents created from this date (ISO format: yyyy-MM-dd)")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fromDate;
 
-    @Schema(description = "Filter documents created till this date (ISO format)")
+    @Schema(description = "Filter documents created till this date (ISO format: yyyy-MM-dd)")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate toDate;
 
-    @Schema(description = "Minimum file size in bytes")
+    @Schema(description = "Minimum file size in bytes", example="for 10KB put 10240 Bytes")
     private Long minSize;
 
-    @Schema(description = "Maximum file size in bytes")
+    @Schema(description = "Maximum file size in bytes", example="for 5 MB put 5,242,880 Bytes")
     private Long maxSize;
 }

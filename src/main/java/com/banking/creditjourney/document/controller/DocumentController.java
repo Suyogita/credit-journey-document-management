@@ -108,7 +108,10 @@ public class DocumentController {
 	 */
 	@Operation(summary = "List PDF documents", description = "Includes Pagination,Sorting and Filtering")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Document fetched successfully"),
-			@ApiResponse(responseCode = "500", description = "Internal server error") })
+			@ApiResponse(responseCode = "500", description = "Internal server error"),
+			@ApiResponse(responseCode = "400", description = "Invalid request"),
+			@ApiResponse(responseCode = "403", description = "Access denied"),
+			@ApiResponse(responseCode = "404", description = "Document not found") })
 	@GetMapping(value = "/documentsListing")
 	public ResponseEntity<DocumentPagedResponse<DocumentListResponse>> listDocuments(
 			@ParameterObject DocumentListRequest request) {
@@ -125,8 +128,10 @@ public class DocumentController {
 	 */
 	@Operation(summary = "Get PDF document by documentid", description = "Retrieve single document metadata for logged-in user")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Document fetched successfully"),
-			@ApiResponse(responseCode = "500", description = "Internal server error") })
-	@GetMapping(value = "/documentsDownload/{documentId}")
+			@ApiResponse(responseCode = "500", description = "Internal server error"),
+
+	})
+	@GetMapping(value = "/documentsDownload/{documentId}", produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<Resource> downloadDocument(
 			@Parameter(description = "Unique identifier of the document, required=true") @PathVariable("documentId") Long documentId) {
 

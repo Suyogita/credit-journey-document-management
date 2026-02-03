@@ -3,6 +3,7 @@ package com.banking.creditjourney.document.exception;
 
 import java.time.LocalDateTime;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -40,8 +41,15 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ApiError> handleIllegalArgumentException(HttpMessageNotReadableException ex) {
+	public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
 		String message = "Invalid deleteType. Allowed exact values: SOFT,HARD";
+		log.error("Business exception", ex);
+		return buildError(HttpStatus.BAD_REQUEST, message);
+	}
+
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public ResponseEntity<ApiError> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
+		String message = "Invalid documentId. Please enter valid documentId for download";
 		log.error("Business exception", ex);
 		return buildError(HttpStatus.BAD_REQUEST, message);
 	}
