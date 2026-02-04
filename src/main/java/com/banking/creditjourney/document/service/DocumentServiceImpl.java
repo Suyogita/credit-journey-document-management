@@ -82,6 +82,10 @@ public class DocumentServiceImpl implements DocumentService {
 					checkSumString, user);
 			Long savedDocumentId = documentRepository.saveDocumentIntoDB(prepareDocumentToSave);
 
+			// Audit trail first, add entry of document in audit trail table
+
+			auditRepository.saveAudit(savedDocumentId, "FILE UPLOAD", user, "New PDF file uploaded");
+
 			responses.add(new DocumentResponse(savedDocumentId, DocumentGlobalConstants.FILE_UPLOAD_SUCCESS,
 					fileStoragePath));
 		}
