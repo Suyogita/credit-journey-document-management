@@ -62,10 +62,13 @@ public class DocumentController {
 	@PostMapping(value = "/documentUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<DocumentResponse>> documentUploads(
 			@Parameter(description = "PDF files to upload", required = true, content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) @RequestPart("files") List<MultipartFile> files,
-			@Parameter(description = "Document metadata", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) @RequestPart(value = "request", required = false) String requestJson)
+			@Parameter(description = "Document metadata", required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) @RequestPart("request") String requestJson)
 			throws IOException {
 
 		String user = UserContext.getUserId();
+		if (user == null) {
+			throw new IllegalStateException("User not authenticated");
+		}
 		log.info("Document upload API starts:  /documentUpload | userId={} | filecount={}", user, files.size());
 
 		ObjectMapper mapper = new ObjectMapper();

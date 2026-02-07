@@ -46,7 +46,7 @@ public final class DocumentsQueries {
 			WHERE documentid IN (:documentIds)
 			""";
 
-	// delete audit trail
+	// upload and delete audit trail
 	public static final String INSERT_AUDIT = """
 			INSERT INTO document_audit(documentid,action,performed_by,reason)
 			VALUES (:documentId, :action, :performedBy, :reason)
