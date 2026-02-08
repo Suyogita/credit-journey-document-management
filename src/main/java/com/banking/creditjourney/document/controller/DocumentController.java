@@ -35,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -91,7 +92,7 @@ public class DocumentController {
 			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@DeleteMapping(value = "/documentsDelete")
 	public ResponseEntity<ApiResponseDetails<DocumentDeleteResponse>> documentDelete(
-			@RequestBody DeleteDocumentRequest request) {
+			@Valid @RequestBody DeleteDocumentRequest request) {
 		String user = UserContext.getUserId();
 		log.info("Document delete API starts:  /documentsDelete | request={} | userId={}", request, user);
 
@@ -117,7 +118,7 @@ public class DocumentController {
 			@ApiResponse(responseCode = "404", description = "Document not found") })
 	@GetMapping(value = "/documentsListing")
 	public ResponseEntity<DocumentPagedResponse<DocumentListResponse>> listDocuments(
-			@ParameterObject DocumentListRequest request) {
+			@Valid @ParameterObject DocumentListRequest request) {
 		String user = UserContext.getUserId();
 		log.info("Document listing API starts:  /documentsListing |userId={} | page={} | size={}", user,
 				request.getPage(), request.getSize());

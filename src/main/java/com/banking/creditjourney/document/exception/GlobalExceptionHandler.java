@@ -55,6 +55,12 @@ public class GlobalExceptionHandler {
 		log.error("Business exception", ex);
 		return buildError(HttpStatus.BAD_REQUEST, message);
 	}
+	
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<ApiError> handleRuntimeException(RuntimeException ex) {
+		log.error("Business exception", ex);
+		return buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiError> handleGeneric(Exception ex) {

@@ -19,29 +19,54 @@ import com.banking.creditjourney.document.repository.AuditRepository;
 @ExtendWith(MockitoExtension.class)
 class AuditRepositoryTest {
 
-    @Mock
-    private NamedParameterJdbcTemplate jdbcTemplate;
+	@Mock
+	private NamedParameterJdbcTemplate jdbcTemplate;
 
-    @InjectMocks
-    private AuditRepository auditRepository;
+	@InjectMocks
+	private AuditRepository auditRepository;
 
-    @Test
-    void saveAudit_success() {
-        when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class)))
-                .thenReturn(1);
+	@Test
+	void saveAudit_success() {
+		when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class))).thenReturn(1);
 
-        assertDoesNotThrow(() ->
-                auditRepository.saveAudit(1L, "UPLOAD", "user1", "SUCCESS")
-        );
-    }
+		assertDoesNotThrow(() -> auditRepository.saveAudit(1L, "UPLOAD", "user1", "SUCCESS"));
+	}
 
-    @Test
-    void saveAudit_failure() {
-        when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class)))
-                .thenThrow(new RuntimeException("DB error"));
+	@Test
+	void saveAudit_failure() {
+		when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class)))
+				.thenThrow(new RuntimeException("DB error"));
 
-        assertThrows(RuntimeException.class,
-                () -> auditRepository.saveAudit(1L, "UPLOAD", "user1", "FAIL")
-        );
-    }
+		assertThrows(RuntimeException.class, () -> auditRepository.saveAudit(1L, "UPLOAD", "user1", "FAIL"));
+	}
+
+	@Test
+	void saveAudit_success_Delete_HARD() {
+		when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class))).thenReturn(1);
+
+		assertDoesNotThrow(() -> auditRepository.saveAudit(1L, "HARD", "user1", "SUCCESS"));
+	}
+
+	@Test
+	void saveAudit_failure_Delete_HARD() {
+		when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class)))
+				.thenThrow(new RuntimeException("DB error"));
+
+		assertThrows(RuntimeException.class, () -> auditRepository.saveAudit(1L, "HARD", "user1", "FAIL"));
+	}
+
+	@Test
+	void saveAudit_success_Delete_SOFT() {
+		when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class))).thenReturn(1);
+
+		assertDoesNotThrow(() -> auditRepository.saveAudit(1L, "SOFT", "user1", "SUCCESS"));
+	}
+
+	@Test
+	void saveAudit_failure_Delete_SOFT() {
+		when(jdbcTemplate.update(anyString(), any(MapSqlParameterSource.class)))
+				.thenThrow(new RuntimeException("DB error"));
+
+		assertThrows(RuntimeException.class, () -> auditRepository.saveAudit(1L, "SOFT", "user1", "FAIL"));
+	}
 }
