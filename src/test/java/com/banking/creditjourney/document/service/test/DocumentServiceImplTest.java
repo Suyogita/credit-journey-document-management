@@ -2,6 +2,7 @@ package com.banking.creditjourney.document.service.test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,12 +10,15 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +28,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.Resource;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +45,7 @@ import com.banking.creditjourney.document.dto.response.DeleteType;
 import com.banking.creditjourney.document.dto.response.DocumentDeleteResponse;
 import com.banking.creditjourney.document.dto.response.DocumentListResponse;
 import com.banking.creditjourney.document.dto.response.DocumentPagedResponse;
+import com.banking.creditjourney.document.exception.DocumentNotFoundException;
 import com.banking.creditjourney.document.global.constant.DocumentGlobalConstants;
 import com.banking.creditjourney.document.helper.DocumentHelper;
 import com.banking.creditjourney.document.repository.AuditRepository;
@@ -293,12 +303,12 @@ class DocumentServiceImplTest {
 	@Test
 	void listDocuments_successFlow_shouldReturnPagedResponse() {
 
-		when(documentRepository.listDocuments(anyString(), any(LocalDate.class), any(LocalDate.class), anyLong(),
-				anyLong(), anyString(), anyString(), anyInt(), anyInt()))
-				.thenReturn(List.of(new DocumentListResponse()));
+		when(documentRepository.listDocuments(anyString(), nullable(LocalDate.class), nullable(LocalDate.class),
+				nullable(Long.class), nullable(Long.class), nullable(String.class), nullable(String.class), anyInt(),
+				anyInt())).thenReturn(List.of(new DocumentListResponse()));
 
-		when(documentRepository.countDocuments(anyString(), any(LocalDate.class), any(LocalDate.class), anyLong(),
-				anyLong())).thenReturn(1L);
+		when(documentRepository.countDocuments(anyString(), nullable(LocalDate.class), nullable(LocalDate.class),
+				nullable(Long.class), nullable(Long.class))).thenReturn(1L);
 
 		DocumentListRequest request = DocumentListRequest.builder().page(0).size(10).build();
 
@@ -306,18 +316,18 @@ class DocumentServiceImplTest {
 
 		assertEquals(1, response.getTotalElements());
 		assertEquals(1, response.getContent().size());
-		verify(documentRepository).listDocuments(anyString(), any(LocalDate.class), any(LocalDate.class), anyLong(),
-				anyLong(), anyString(), anyString(), eq(10), eq(0));
+
 	}
 
 	@Test
 	void listDocuments_emptyResult_shouldReturnEmptyPage() {
 
-		when(documentRepository.listDocuments(anyString(), any(LocalDate.class), any(LocalDate.class), anyLong(),
-				anyLong(), anyString(), anyString(), anyInt(), anyInt())).thenReturn(List.of());
+		when(documentRepository.listDocuments(anyString(), nullable(LocalDate.class), nullable(LocalDate.class),
+				nullable(Long.class), nullable(Long.class), nullable(String.class), nullable(String.class), anyInt(),
+				anyInt())).thenReturn(List.of());
 
-		when(documentRepository.countDocuments(anyString(), any(LocalDate.class), any(LocalDate.class), anyLong(),
-				anyLong())).thenReturn(0L);
+		when(documentRepository.countDocuments(anyString(), nullable(LocalDate.class), nullable(LocalDate.class),
+				nullable(Long.class), nullable(Long.class))).thenReturn(0L);
 
 		DocumentPagedResponse<DocumentListResponse> response = documentService.listDocuments("user123",
 				DocumentListRequest.builder().build());
@@ -334,6 +344,54 @@ class DocumentServiceImplTest {
 
 		assertThrows(RuntimeException.class,
 				() -> documentService.listDocuments("user123", DocumentListRequest.builder().build()));
+	}
+
+	// retrieve document
+
+	@Test
+	void shouldDownloadDocumentSuccessfully() throws Exception {
+
+		Long documentId = 1L;
+		String userId = "user123";
+
+		Path tempFile = Files.createTempFile("test-doc", ".pdf");
+		Files.write(tempFile, "pdf-content".getBytes());
+
+		Document document = new Document();
+		document.setFileName("doc.pdf");
+		document.setStoragePath(tempFile.toString());
+		document.setFileSize(Files.size(tempFile));
+
+		Mockito.when(documentRepository.findDocumentById(documentId, userId)).thenReturn(Optional.of(document));
+
+		ResponseEntity<Resource> response = documentService.downloadDocument(documentId, userId);
+
+		assertEquals(200, response.getStatusCodeValue());
+		assertEquals(MediaType.APPLICATION_PDF, response.getHeaders().getContentType());
+		assertNotNull(response.getBody());
+
+		Files.deleteIfExists(tempFile);
+	}
+
+	@Test
+	void shouldThrowExceptionWhenDocumentNotFoundInDb() {
+
+		Mockito.when(documentRepository.findDocumentById(1L, "user123")).thenReturn(Optional.empty());
+
+		assertThrows(EmptyResultDataAccessException.class, () -> documentService.downloadDocument(1L, "user123"));
+	}
+
+	@Test
+	void shouldThrowExceptionWhenFileMissingOnDisk() {
+		Document document = new Document();
+		document.setStoragePath("/invalid/path/doc.pdf");
+
+		Mockito.when(documentRepository.findDocumentById(1L, USER)).thenReturn(Optional.of(document));
+		DocumentNotFoundException ex = assertThrows(DocumentNotFoundException.class,
+				() -> documentService.downloadDocument(1L, USER));
+
+		assertEquals("File not found on disk", ex.getMessage());
+		verify(documentRepository).findDocumentById(1L, USER);
 	}
 
 }

@@ -13,7 +13,7 @@ public class DocumentGlobalConstants {
 	public static final String NO_DOCUMENT_FOUND = "No document(s) found for deletion";
 	public static final String FILE_PATH_ERROR = "File path is null or empty. Skipping deletion";
 	public static final String FILE_DELETE_FAILED = "File deletion failed for path: ";
-	public static final String FILE_NOT_FOUND_ON_DISK = "File not found on disk: ";
+	public static final String FILE_NOT_FOUND_ON_DISK = "File not found on disk";
 	public static final String NOT_REGULAR_FILE_ERROR = "Path is not a regular file: ";
 	public static final String FILE_PATH_INVALID = "File path outside allowed storage directory";
 	public static final String DOCUMENT_NOT_BELONGS_TO_USER = "One or more document(s) do not belong to the user or are already deleted";

@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,12 +22,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.banking.creditjourney.document.controller.DocumentController;
@@ -36,6 +43,7 @@ import com.banking.creditjourney.document.dto.response.DocumentDeleteResponse;
 import com.banking.creditjourney.document.dto.response.DocumentListResponse;
 import com.banking.creditjourney.document.dto.response.DocumentPagedResponse;
 import com.banking.creditjourney.document.dto.response.DocumentResponse;
+import com.banking.creditjourney.document.exception.DocumentNotFoundException;
 import com.banking.creditjourney.document.service.DocumentService;
 import com.banking.creditjourney.document.service.DocumentServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -213,10 +221,9 @@ class DocumentControllerTest {
 
 	// list document
 
-	// -------- SUCCESS CASES --------
-
 	@Test
 	void listDocuments_defaultRequest_shouldReturn200() throws Exception {
+		mockAuthenticatedUser("user1");
 		when(documentService.listDocuments(anyString(), any())).thenReturn(emptyPage());
 
 		mockMvc.perform(get("/api/documentmgmt/documentsListing")).andExpect(status().isOk());
@@ -224,14 +231,14 @@ class DocumentControllerTest {
 
 	@Test
 	void listDocuments_withAllParams_shouldReturn200() throws Exception {
+		mockAuthenticatedUser("user1");
 		when(documentService.listDocuments(anyString(), any())).thenReturn(samplePage());
 
 		mockMvc.perform(get("/api/documentmgmt/documentsListing").param("page", "1").param("size", "5")
-				.param("sortBy", "created_at").param("sortDir", "DESC").param("minSize", "100").param("maxSize", "1000")
-				.param("fromDate", "2024-01-01").param("toDate", "2024-12-31")).andExpect(status().isOk());
+				.param("sortBy", "created_at").param("sortDir", "DESC").param("fromDate", "2024-01-01")
+				.param("toDate", "2024-12-31").param("minSize", "100").param("maxSize", "1000"))
+				.andExpect(status().isOk());
 	}
-
-	// -------- VALIDATION FAILURES --------
 
 	@Test
 	void listDocuments_invalidPage_shouldReturn400() throws Exception {
@@ -251,10 +258,9 @@ class DocumentControllerTest {
 				.andExpect(status().isBadRequest());
 	}
 
-	// -------- ERROR CASES --------
-
 	@Test
 	void listDocuments_serviceThrowsException_shouldReturn500() throws Exception {
+		mockAuthenticatedUser("user1");
 		when(documentService.listDocuments(anyString(), any())).thenThrow(new RuntimeException("DB error"));
 
 		mockMvc.perform(get("/api/documentmgmt/documentsListing").param("page", "0").param("size", "10"))
@@ -269,6 +275,57 @@ class DocumentControllerTest {
 	private DocumentPagedResponse<DocumentListResponse> samplePage() {
 		return DocumentPagedResponse.<DocumentListResponse>builder().content(List.of(new DocumentListResponse()))
 				.page(0).size(10).totalElements(1).build();
+	}
+
+	// retrieve document
+
+	@Test
+	void shouldDownloadDocumentSuccessfully() throws Exception {
+
+		Long documentId = 1L;
+
+		mockAuthenticatedUser("user1");
+		byte[] pdfBytes = "pdf-content".getBytes();
+
+		Resource resource = new ByteArrayResource(pdfBytes);
+
+		ResponseEntity<Resource> response = ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"doc.pdf\"").body(resource);
+
+		Mockito.when(documentService.downloadDocument(documentId, "user1")).thenReturn(response);
+
+		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", documentId)).andExpect(status().isOk())
+				.andExpect((ResultMatcher) content().contentType(MediaType.APPLICATION_PDF))
+				.andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"doc.pdf\""));
+	}
+
+	@Test
+	void shouldReturn404WhenDocumentNotFound() throws Exception {
+
+		mockAuthenticatedUser("user1");
+
+		Mockito.when(documentService.downloadDocument(99L, "user1"))
+				.thenThrow(new org.springframework.dao.EmptyResultDataAccessException(1));
+
+		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", 99L)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void shouldReturn404WhenFileMissingOnDisk() throws Exception {
+		mockAuthenticatedUser("user1");
+
+		Mockito.when(documentService.downloadDocument(1L, "user1"))
+				.thenThrow(new DocumentNotFoundException("FILE_NOT_FOUND_ON_DISK"));
+
+		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", 1L)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void shouldReturn400ForInvalidDocumentId() throws Exception {
+		mockAuthenticatedUser("user1");
+
+		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", "abc"))
+				.andExpect(status().isBadRequest());
 	}
 
 }

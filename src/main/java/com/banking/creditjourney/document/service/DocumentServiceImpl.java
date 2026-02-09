@@ -28,6 +28,7 @@ import com.banking.creditjourney.document.dto.response.DocumentDeleteResponse;
 import com.banking.creditjourney.document.dto.response.DocumentListResponse;
 import com.banking.creditjourney.document.dto.response.DocumentPagedResponse;
 import com.banking.creditjourney.document.dto.response.DocumentResponse;
+import com.banking.creditjourney.document.exception.DocumentNotFoundException;
 import com.banking.creditjourney.document.global.constant.DocumentGlobalConstants;
 import com.banking.creditjourney.document.helper.DocumentHelper;
 import com.banking.creditjourney.document.repository.AuditRepository;
@@ -217,7 +218,7 @@ public class DocumentServiceImpl implements DocumentService {
 		Path filePath = Paths.get(document.getStoragePath());
 		if (!Files.exists(filePath)) {
 			log.error("File not found on disk | path={}", filePath);
-			throw new IllegalArgumentException(DocumentGlobalConstants.FILE_NOT_FOUND_ON_DISK);
+			throw new DocumentNotFoundException(DocumentGlobalConstants.FILE_NOT_FOUND_ON_DISK);
 		}
 
 		Resource resource = new FileSystemResource(filePath);

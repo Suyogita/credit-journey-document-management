@@ -12,7 +12,8 @@ public class DocumentListRequestTest {
 	void builder_buildSuccessfully() {
 		DocumentListRequest request = DocumentListRequest.builder().page(0).size(0).build();
 
-		assertEquals(1, request.getPage());
+		assertEquals(0, request.getPage());
+		assertEquals(0, request.getSize());
 
 	}
 

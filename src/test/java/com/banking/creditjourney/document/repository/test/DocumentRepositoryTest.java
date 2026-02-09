@@ -152,8 +152,8 @@ class DocumentRepositoryTest {
 		when(namedParameterJdbcTemplate.query(anyString(), any(MapSqlParameterSource.class),
 				any(BeanPropertyRowMapper.class))).thenReturn(List.of(new DocumentListResponse()));
 
-		List<DocumentListResponse> result = documentRepository.listDocuments("user123", any(LocalDate.class),
-				any(LocalDate.class), any(Long.class), any(Long.class), anyString(), anyString(), anyInt(), anyInt());
+		List<DocumentListResponse> result = documentRepository.listDocuments("user123", null, null, 0L, 100L,
+				"created_at", "ASC", 0, 10);
 
 		assertFalse(result.isEmpty());
 	}
@@ -163,16 +163,15 @@ class DocumentRepositoryTest {
 		when(namedParameterJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), eq(Long.class)))
 				.thenReturn(5L);
 
-		Long count = documentRepository.countDocuments("user123", any(LocalDate.class), any(LocalDate.class),
-				any(Long.class), any(Long.class));
+		Long count = documentRepository.countDocuments("user123", null, null, null, null);
 
 		assertEquals(5L, count);
 	}
 
 	@Test
 	void listDocuments_invalidSort_shouldThrowException() {
-		assertThrows(IllegalArgumentException.class, () -> documentRepository.listDocuments("user123",
-				any(LocalDate.class), any(LocalDate.class), any(Long.class), any(Long.class), "hack", "ASC", 0, 10));
+		assertThrows(IllegalArgumentException.class,
+				() -> documentRepository.listDocuments("user123", null, null, 0L, 10L, "hack", "ASC", 0, 10));
 	}
 
 	@Test

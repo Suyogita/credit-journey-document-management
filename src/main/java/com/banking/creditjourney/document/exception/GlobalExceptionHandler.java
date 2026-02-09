@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,15 +33,36 @@ public class GlobalExceptionHandler {
 		return buildError(HttpStatus.BAD_REQUEST, message);
 	}
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
-		return buildError(HttpStatus.BAD_REQUEST, "Invalid request parameters");
-	}
-
 	@ExceptionHandler(IllegalStateException.class)
 	public ResponseEntity<ApiError> handleIllegalState(IllegalStateException ex) {
 		log.error("Business exception", ex);
 		return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
+	}
+
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public ResponseEntity<ApiError> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
+		String message = "Document not found";
+		log.error("Document not found", ex);
+		return buildError(HttpStatus.NOT_FOUND, message);
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<ApiError> handleRuntimeException(RuntimeException ex) {
+		log.error("Business exception", ex);
+		return buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+	}
+
+	@ExceptionHandler(DocumentNotFoundException.class)
+	public ResponseEntity<ApiError> handleDocumentNotFoundException(DocumentNotFoundException ex) {
+		log.error("Document not found", ex);
+		return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ApiError> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+		String message = String.format("Invalid value '%s' for parameter '%s'", ex.getValue(), ex.getName());
+		log.error("Business exception", ex);
+		return buildError(HttpStatus.BAD_REQUEST, message);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -49,17 +71,9 @@ public class GlobalExceptionHandler {
 		return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
 	}
 
-	@ExceptionHandler(EmptyResultDataAccessException.class)
-	public ResponseEntity<ApiError> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
-		String message = "Invalid documentId. Please enter valid documentId for download";
-		log.error("Business exception", ex);
-		return buildError(HttpStatus.BAD_REQUEST, message);
-	}
-	
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<ApiError> handleRuntimeException(RuntimeException ex) {
-		log.error("Business exception", ex);
-		return buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
+		return buildError(HttpStatus.BAD_REQUEST, "Invalid request parameters");
 	}
 
 	@ExceptionHandler(Exception.class)

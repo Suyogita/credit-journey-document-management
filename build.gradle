@@ -26,6 +26,9 @@ pitest {
     targetTests = ['com.banking.creditjourney.document.*']
     threads = 4
     outputFormats = ['HTML']
+    timestampedReports= false
+    mutators = ['DEFAULTS']
+    failWhenNoMutations= false
     }
 
 configurations {

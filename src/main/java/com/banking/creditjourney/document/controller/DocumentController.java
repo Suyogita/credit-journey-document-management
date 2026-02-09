@@ -120,6 +120,9 @@ public class DocumentController {
 	public ResponseEntity<DocumentPagedResponse<DocumentListResponse>> listDocuments(
 			@Valid @ParameterObject DocumentListRequest request) {
 		String user = UserContext.getUserId();
+		if (user == null) {
+			throw new IllegalStateException("User not authenticated");
+		}
 		log.info("Document listing API starts:  /documentsListing |userId={} | page={} | size={}", user,
 				request.getPage(), request.getSize());
 		return ResponseEntity.ok(documentService.listDocuments(user, request));
