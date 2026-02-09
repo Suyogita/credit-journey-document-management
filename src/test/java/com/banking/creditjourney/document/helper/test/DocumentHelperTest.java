@@ -20,7 +20,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.banking.creditjourney.document.domain.model.Document;
-import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.global.constant.DocumentGlobalConstants;
 import com.banking.creditjourney.document.helper.DocumentHelper;
 
@@ -68,7 +67,7 @@ class DocumentHelperTest {
 
 	@Test
 	void prepareDocumentObject_success() {
-		Document doc = helper.prepareDocumentObject("/path", new CreateDocumentRequest(),
+		Document doc = helper.prepareDocumentObject("/path",
 				new MockMultipartFile("file", "a.pdf", "application/pdf", "data".getBytes()), "checksum", "user1");
 
 		assertEquals("user1", doc.getUserId());

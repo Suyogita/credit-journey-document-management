@@ -19,55 +19,58 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+	public static final String DOCUMENT_NOT_FOUND = "Document not found";
+	public static final String BUSINESS_EX = "Business exception";
+
 	@ExceptionHandler(MissingServletRequestPartException.class)
 	public ResponseEntity<ApiError> handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
 		String message = "Request payload is missing or invalid";
-		log.error("Business exception", ex);
+		log.error(BUSINESS_EX, ex);
 		return buildError(HttpStatus.BAD_REQUEST, message);
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
 		String message = "Request payload is missing or invalid";
-		log.error("Business exception", ex);
+		log.error(BUSINESS_EX, ex);
 		return buildError(HttpStatus.BAD_REQUEST, message);
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
 	public ResponseEntity<ApiError> handleIllegalState(IllegalStateException ex) {
-		log.error("Business exception", ex);
+		log.error(BUSINESS_EX, ex);
 		return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
 	}
 
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public ResponseEntity<ApiError> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
-		String message = "Document not found";
-		log.error("Document not found", ex);
-		return buildError(HttpStatus.NOT_FOUND, message);
+
+		log.error(DOCUMENT_NOT_FOUND, ex);
+		return buildError(HttpStatus.NOT_FOUND, DOCUMENT_NOT_FOUND);
 	}
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ApiError> handleRuntimeException(RuntimeException ex) {
-		log.error("Business exception", ex);
+		log.error(BUSINESS_EX, ex);
 		return buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 	}
 
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<ApiError> handleDocumentNotFoundException(DocumentNotFoundException ex) {
-		log.error("Document not found", ex);
+		log.error(DOCUMENT_NOT_FOUND, ex);
 		return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<ApiError> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
 		String message = String.format("Invalid value '%s' for parameter '%s'", ex.getValue(), ex.getName());
-		log.error("Business exception", ex);
+		log.error(BUSINESS_EX, ex);
 		return buildError(HttpStatus.BAD_REQUEST, message);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ApiError> handleIllegalArgumentException(IllegalArgumentException ex) {
-		log.error("Business exception", ex);
+		log.error(BUSINESS_EX, ex);
 		return buildError(HttpStatus.BAD_REQUEST, ex.getMessage());
 	}
 

@@ -76,11 +76,11 @@ public class DocumentServiceImpl implements DocumentService {
 			}
 
 			// Store file on disk
-			String fileStoragePath = documentHelper.storeFile(file, user);
+			String fileStoragePath = documentHelper.storeFile(file);
 
 			// Save metadata to H2 DB
-			Document prepareDocumentToSave = documentHelper.prepareDocumentObject(fileStoragePath, request, file,
-					checkSumString, user);
+			Document prepareDocumentToSave = documentHelper.prepareDocumentObject(fileStoragePath, file, checkSumString,
+					user);
 			Long savedDocumentId = documentRepository.saveDocumentIntoDB(prepareDocumentToSave);
 
 			// Audit trail first, add entry of document in audit trail table

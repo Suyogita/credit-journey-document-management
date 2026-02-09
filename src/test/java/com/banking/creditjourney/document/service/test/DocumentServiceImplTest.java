@@ -84,9 +84,9 @@ class DocumentServiceImplTest {
 
 		when(documentHelper.generateChecksumForFile(file)).thenReturn("checksum");
 
-		when(documentHelper.storeFile(any(), any())).thenReturn("/path/test.pdf");
+		when(documentHelper.storeFile(any())).thenReturn("/path/test.pdf");
 
-		when(documentHelper.prepareDocumentObject(any(), any(), any(), any(), any())).thenReturn(new Document());
+		when(documentHelper.prepareDocumentObject(any(), any(), any(), any())).thenReturn(new Document());
 
 		when(documentRepository.saveDocumentIntoDB(any())).thenReturn(1L);
 
@@ -100,18 +100,6 @@ class DocumentServiceImplTest {
 		verify(documentRepository, never()).saveDocumentIntoDB(any());
 
 	}
-
-//	@Test
-//	void uploadFiles_duplicateFile_shouldFail() {
-//		when(documentHelper.generateChecksumForFile(file)).thenReturn("checksum");
-//
-//		when(documentRepository.findByCheckSum("checksum")).thenReturn(Optional.of(new Document()));
-//
-//		RuntimeException ex = assertThrows(RuntimeException.class,
-//				() -> documentService.uploadFiles(List.of(file), request, "user1"));
-//
-//		assertEquals(DocumentGlobalConstants.DUPLICATE_FILE, ex.getMessage());
-//	}
 
 	@Test
 	void uploadFiles_duplicateFile_shouldSkip() {
@@ -131,7 +119,7 @@ class DocumentServiceImplTest {
 
 		when(documentRepository.findByCheckSum(any())).thenReturn(Optional.empty());
 
-		when(documentHelper.storeFile(any(), any()))
+		when(documentHelper.storeFile(any()))
 				.thenThrow(new RuntimeException(DocumentGlobalConstants.FILE_STORAGE_FAILED));
 
 		assertThrows(RuntimeException.class, () -> documentService.uploadFiles(List.of(file), request, "user1"));
@@ -143,9 +131,9 @@ class DocumentServiceImplTest {
 
 		when(documentHelper.generateChecksumForFile(file)).thenReturn("checksum");
 
-		when(documentHelper.storeFile(any(), any())).thenReturn("/path");
+		when(documentHelper.storeFile(any())).thenReturn("/path");
 
-		when(documentHelper.prepareDocumentObject(any(), any(), any(), any(), any())).thenReturn(new Document());
+		when(documentHelper.prepareDocumentObject(any(), any(), any(), any())).thenReturn(new Document());
 
 		when(documentRepository.saveDocumentIntoDB(any())).thenReturn(1L);
 
@@ -160,9 +148,9 @@ class DocumentServiceImplTest {
 	void delete_documentNotFound_shouldFail() {
 		when(documentRepository.findByIds(List.of(99L), "user1")).thenReturn(List.of());
 
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(99L), DeleteType.SOFT, "cleanup");
+		DeleteDocumentRequest dreq = new DeleteDocumentRequest(List.of(99L), DeleteType.SOFT, "cleanup");
 
-		assertThrows(IllegalArgumentException.class, () -> documentService.documentDeletes(request, "user1"));
+		assertThrows(IllegalArgumentException.class, () -> documentService.documentDeletes(dreq, "user1"));
 	}
 
 	@Test
@@ -170,14 +158,14 @@ class DocumentServiceImplTest {
 		when(documentRepository.findByIds(List.of(1L), "user1"))
 				.thenThrow(new IllegalArgumentException("DOCUMENT_NOT_BELONGS_TO_USER"));
 
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(1L), DeleteType.SOFT, "cleanup");
+		DeleteDocumentRequest delReq = new DeleteDocumentRequest(List.of(1L), DeleteType.SOFT, "cleanup");
 
-		assertThrows(IllegalArgumentException.class, () -> documentService.documentDeletes(request, "user1"));
+		assertThrows(IllegalArgumentException.class, () -> documentService.documentDeletes(delReq, "user1"));
 	}
 
 	@Test
 	void softDelete_success() {
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(1L, 2L), DeleteType.SOFT, "cleanup");
+		DeleteDocumentRequest rst = new DeleteDocumentRequest(List.of(1L, 2L), DeleteType.SOFT, "cleanup");
 
 		Document d1 = new Document();
 		d1.setDocumentId(1L);
@@ -187,11 +175,11 @@ class DocumentServiceImplTest {
 		d2.setDocumentId(2L);
 		d2.setFileDeleted(false);
 
-		when(documentRepository.findByIds(request.getDocumentIds(), USER)).thenReturn(List.of(d1, d2));
+		when(documentRepository.findByIds(rst.getDocumentIds(), USER)).thenReturn(List.of(d1, d2));
 
 		when(documentRepository.softDeleteByIds(List.of(1L, 2L), USER)).thenReturn(2);
 
-		DocumentDeleteResponse response = documentService.documentDeletes(request, USER);
+		DocumentDeleteResponse response = documentService.documentDeletes(rst, USER);
 
 		assertEquals(2, response.getDeletedCount());
 
@@ -204,18 +192,18 @@ class DocumentServiceImplTest {
 
 	@Test
 	void hardDelete_success() {
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(5L), DeleteType.HARD, "purge");
+		DeleteDocumentRequest rq = new DeleteDocumentRequest(List.of(5L), DeleteType.HARD, "purge");
 
 		Document softDeletedDoc = new Document();
 		softDeletedDoc.setDocumentId(5L);
 		softDeletedDoc.setFileDeleted(true);
 		softDeletedDoc.setStoragePath("/tmp/test.pdf");
 
-		when(documentRepository.findByIds(request.getDocumentIds(), USER)).thenReturn(List.of(softDeletedDoc));
+		when(documentRepository.findByIds(rq.getDocumentIds(), USER)).thenReturn(List.of(softDeletedDoc));
 
 		when(documentRepository.hardDeleteByIds(List.of(5L))).thenReturn(1);
 
-		DocumentDeleteResponse response = documentService.documentDeletes(request, USER);
+		DocumentDeleteResponse response = documentService.documentDeletes(rq, USER);
 
 		assertEquals(1, response.getDeletedCount());
 
@@ -228,73 +216,76 @@ class DocumentServiceImplTest {
 
 	@Test
 	void noDocumentsFound_shouldThrowException() {
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(1L), DeleteType.SOFT, "cleanup");
+		DeleteDocumentRequest req_del = new DeleteDocumentRequest(List.of(1L), DeleteType.SOFT, "cleanup");
 
-		when(documentRepository.findByIds(request.getDocumentIds(), USER)).thenReturn(List.of());
+		when(documentRepository.findByIds(req_del.getDocumentIds(), USER)).thenReturn(List.of());
 
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-				() -> documentService.documentDeletes(request, USER));
+				() -> documentService.documentDeletes(req_del, USER));
 
 		assertEquals(DocumentGlobalConstants.NO_DOCUMENT_FOUND, ex.getMessage());
 	}
 
 	@Test
 	void documentBelongsToAnotherUser_shouldThrowException() {
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(1L, 2L), DeleteType.SOFT, "cleanup");
+		DeleteDocumentRequest deleteDocumentRequests = new DeleteDocumentRequest(List.of(1L, 2L), DeleteType.SOFT,
+				"cleanup");
 
 		Document d1 = new Document();
 		d1.setFileDeleted(false);
 
 		// Only 1 document returned, but 2 requested
-		when(documentRepository.findByIds(request.getDocumentIds(), USER)).thenReturn(List.of(d1));
+		when(documentRepository.findByIds(deleteDocumentRequests.getDocumentIds(), USER)).thenReturn(List.of(d1));
 
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-				() -> documentService.documentDeletes(request, USER));
+				() -> documentService.documentDeletes(deleteDocumentRequests, USER));
 
 		assertEquals(DocumentGlobalConstants.DOCUMENT_NOT_BELONGS_TO_USER, ex.getMessage());
 	}
 
 	@Test
 	void softDelete_alreadyDeleted_shouldThrowException() {
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(1L), DeleteType.SOFT, "cleanup");
+		DeleteDocumentRequest deleteDocumentRequest = new DeleteDocumentRequest(List.of(1L), DeleteType.SOFT,
+				"cleanup");
 
 		Document deletedDoc = new Document();
 		deletedDoc.setFileDeleted(true);
 
-		when(documentRepository.findByIds(request.getDocumentIds(), USER)).thenReturn(List.of(deletedDoc));
+		when(documentRepository.findByIds(deleteDocumentRequest.getDocumentIds(), USER))
+				.thenReturn(List.of(deletedDoc));
 
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-				() -> documentService.documentDeletes(request, USER));
+				() -> documentService.documentDeletes(deleteDocumentRequest, USER));
 
 		assertEquals(DocumentGlobalConstants.DOCUMENT_DELETED_ALREADY, ex.getMessage());
 	}
 
 	@Test
 	void hardDelete_withoutSoftDelete_shouldThrowException() {
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(10L), DeleteType.HARD, "purge");
+		DeleteDocumentRequest req = new DeleteDocumentRequest(List.of(10L), DeleteType.HARD, "purge");
 
 		Document activeDoc = new Document();
 		activeDoc.setFileDeleted(false);
 
-		when(documentRepository.findByIds(request.getDocumentIds(), USER)).thenReturn(List.of(activeDoc));
+		when(documentRepository.findByIds(req.getDocumentIds(), USER)).thenReturn(List.of(activeDoc));
 
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-				() -> documentService.documentDeletes(request, USER));
+				() -> documentService.documentDeletes(req, USER));
 
 		assertEquals(DocumentGlobalConstants.DOCUMENT_SOFT_FIRST_BEFORE_HARD, ex.getMessage());
 	}
 
 	@Test
 	void invalidDeleteType_shouldThrowException() {
-		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(1L), null, "cleanup");
+		DeleteDocumentRequest requestDel = new DeleteDocumentRequest(List.of(1L), null, "cleanup");
 
 		Document doc = new Document();
 		doc.setFileDeleted(false);
 
-		when(documentRepository.findByIds(request.getDocumentIds(), USER)).thenReturn(List.of(doc));
+		when(documentRepository.findByIds(requestDel.getDocumentIds(), USER)).thenReturn(List.of(doc));
 
 		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-				() -> documentService.documentDeletes(request, USER));
+				() -> documentService.documentDeletes(requestDel, USER));
 
 		assertEquals(DocumentGlobalConstants.INVALID_DELETETYPE, ex.getMessage());
 	}
@@ -310,9 +301,9 @@ class DocumentServiceImplTest {
 		when(documentRepository.countDocuments(anyString(), nullable(LocalDate.class), nullable(LocalDate.class),
 				nullable(Long.class), nullable(Long.class))).thenReturn(1L);
 
-		DocumentListRequest request = DocumentListRequest.builder().page(0).size(10).build();
+		DocumentListRequest requestBuild = DocumentListRequest.builder().page(0).size(10).build();
 
-		DocumentPagedResponse<DocumentListResponse> response = documentService.listDocuments("user123", request);
+		DocumentPagedResponse<DocumentListResponse> response = documentService.listDocuments("user123", requestBuild);
 
 		assertEquals(1, response.getTotalElements());
 		assertEquals(1, response.getContent().size());
@@ -348,6 +339,7 @@ class DocumentServiceImplTest {
 
 	// retrieve document
 
+	@SuppressWarnings({ "deprecation" })
 	@Test
 	void shouldDownloadDocumentSuccessfully() throws Exception {
 

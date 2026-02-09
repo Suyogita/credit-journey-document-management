@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -227,11 +226,6 @@ class DocumentRepositoryTest {
 		assertThrows(IllegalArgumentException.class,
 				() -> documentRepository.listDocuments("user123", null, null, null, null, "hack_column", "ASC", 10, 0));
 	}
-
-	/*
-	 * --------------------------------------------------- countDocuments tests
-	 * ---------------------------------------------------
-	 */
 
 	@Test
 	void countDocuments_success() {

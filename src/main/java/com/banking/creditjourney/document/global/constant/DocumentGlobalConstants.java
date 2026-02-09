@@ -1,6 +1,11 @@
 package com.banking.creditjourney.document.global.constant;
 
 public class DocumentGlobalConstants {
+
+	private DocumentGlobalConstants() {
+
+	}
+
 	public static final String FILE_EMPTY = "File is empty";
 	public static final String ONLY_PDF_FILE = "Only PDF file is allowed";
 	public static final String FILE_SIZE_5MB = "File size exceeds 5MB";
@@ -23,4 +28,7 @@ public class DocumentGlobalConstants {
 	public static final String DOCUMENT_DELETED_ALREADY = "All requested documents are SOFT deleted already";
 	public static final String DOCUMENT_SOFT_FIRST_BEFORE_HARD = "Document must be soft deleted before hard delete";
 	public static final String DOCUMENT_DELETED = "Document is deleted already";
+	public static final String DOCUMENTIDS = "documentIds";
+	public static final String USERID = "userId";
+
 }

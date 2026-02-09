@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.banking.creditjourney.document.domain.model.Document;
-import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.global.constant.DocumentGlobalConstants;
 
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +52,7 @@ public class DocumentHelper {
 
 	}
 
-	public String storeFile(MultipartFile file, String userId) {
+	public String storeFile(MultipartFile file) {
 		try {
 
 			Files.createDirectories(Path.of(storageBasePath));
@@ -68,7 +67,7 @@ public class DocumentHelper {
 		}
 	}
 
-	public Document prepareDocumentObject(String fileStoragePath, CreateDocumentRequest request, MultipartFile file,
+	public Document prepareDocumentObject(String fileStoragePath, MultipartFile file,
 			String checkSumString, String user) {
 		Document document = new Document();
 		document.setUserId(user);

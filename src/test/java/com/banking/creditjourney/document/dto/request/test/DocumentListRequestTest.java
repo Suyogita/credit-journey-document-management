@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.banking.creditjourney.document.dto.request.DocumentListRequest;
 
-public class DocumentListRequestTest {
+class DocumentListRequestTest {
 
 	@Test
 	void builder_buildSuccessfully() {

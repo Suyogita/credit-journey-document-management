@@ -35,7 +35,7 @@ public class DocumentRepository {
 			"updated_at");
 
 	public Long saveDocumentIntoDB(Document doc) {
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("userId", doc.getUserId())
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue(DocumentGlobalConstants.USERID, doc.getUserId())
 				.addValue("fileName", doc.getFileName()).addValue("fileType", doc.getFileType())
 				.addValue("fileSize", doc.getFileSize()).addValue("checksum", doc.getChecksum())
 				.addValue("storagePath", doc.getStoragePath());
@@ -57,8 +57,8 @@ public class DocumentRepository {
 	// find document(s) by ids
 	public List<Document> findByIds(List<Long> documentIds, String user) {
 
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("documentIds", documentIds)
-				.addValue("userId", user);
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue(DocumentGlobalConstants.DOCUMENTIDS, documentIds)
+				.addValue(DocumentGlobalConstants.USERID, user);
 
 		return namedParameterJdbcTemplate.query(DocumentsQueries.FIND_BY_IDS, params,
 				new BeanPropertyRowMapper<>(Document.class));
@@ -67,8 +67,8 @@ public class DocumentRepository {
 	// soft delete
 	public int softDeleteByIds(List<Long> documentIds, String deletedBy) {
 
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("documentIds", documentIds)
-				.addValue("userId", deletedBy).addValue("deletedBy", deletedBy);
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue(DocumentGlobalConstants.DOCUMENTIDS, documentIds)
+				.addValue(DocumentGlobalConstants.USERID, deletedBy).addValue("deletedBy", deletedBy);
 
 		return namedParameterJdbcTemplate.update(DocumentsQueries.SOFT_DELETE_BY_IDS, params);
 	}
@@ -76,7 +76,7 @@ public class DocumentRepository {
 	// hard delete
 	public int hardDeleteByIds(List<Long> documentIds) {
 
-		MapSqlParameterSource params = new MapSqlParameterSource("documentIds", documentIds);
+		MapSqlParameterSource params = new MapSqlParameterSource(DocumentGlobalConstants.DOCUMENTIDS, documentIds);
 
 		return namedParameterJdbcTemplate.update(DocumentsQueries.HARD_DELETE_BY_IDS, params);
 	}
@@ -88,7 +88,7 @@ public class DocumentRepository {
 
 		String sql = String.format(DocumentsQueries.LIST_DOCUMENTS, sortBy, sortDir);
 
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("userId", user)
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue(DocumentGlobalConstants.USERID, user)
 				.addValue("fromDate", fromDate).addValue("toDate", toDate).addValue("minSize", minSize)
 				.addValue("maxSize", maxSize);
 		params.addValue("limit", size);
@@ -110,7 +110,7 @@ public class DocumentRepository {
 	}
 
 	public long countDocuments(String user, LocalDate fromDate, LocalDate toDate, Long minSize, Long maxSize) {
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("userId", user)
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue(DocumentGlobalConstants.USERID, user)
 				.addValue("fromDate", fromDate).addValue("toDate", toDate).addValue("minSize", minSize)
 				.addValue("maxSize", maxSize);
 
@@ -121,7 +121,7 @@ public class DocumentRepository {
 
 		log.info("findDocumentById() starts ");
 
-		MapSqlParameterSource params = new MapSqlParameterSource().addValue("documentId", documentId).addValue("userId",
+		MapSqlParameterSource params = new MapSqlParameterSource().addValue("documentId", documentId).addValue(DocumentGlobalConstants.USERID,
 				user);
 
 		return namedParameterJdbcTemplate

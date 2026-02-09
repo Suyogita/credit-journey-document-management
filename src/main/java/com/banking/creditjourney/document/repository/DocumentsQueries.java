@@ -2,8 +2,8 @@ package com.banking.creditjourney.document.repository;
 
 public final class DocumentsQueries {
 
-	public DocumentsQueries() {
-		super();
+	private DocumentsQueries() {
+
 	}
 
 	public static final String INSERT_DOCUMENT = """
