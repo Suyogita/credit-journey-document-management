@@ -3,7 +3,7 @@
 ## Service Ownership
 **Owner:** Suyogita Shivare, 
 **Role:** Custom Software Engineering Team Lead, 
-**Contact:** suyogita.shivare@accenture.com
+**Contact:** suyogita4490@gmail.com
 
 ### Document Management REST API (Enterprise-Grade) 
 
@@ -77,12 +77,12 @@ ________________________________________
 
 #### API Endpoints ('api/documentmgmt'):
 
-| Method | Endpoint                                           | Description                     |
-|-------:|----------------------------------------------------|---------------------------------|
-| POST   | `/api/documentmgmt/documentUpload`                 | Upload document                 |
-| GET    | `/api/documentmgmt/documents/{documentId}`         | Download document               |
-| GET    | `/api/documentmgmt/documentsListing`               | List documents                  |
-| DELETE | `/api/documentmgmt/documentsDelete`                | Soft / Hard (GDPR) delete       |
+| Method | Endpoint                                              | Description                     |
+|-------:|-------------------------------------------------------|---------------------------------|
+| POST   | `/api/v1/documentmgmt/documentUpload`                 | Upload document                 |
+| GET    | `/api/v1/documentmgmt/documents/{documentId}`         | Download document               |
+| GET    | `/api/v1/documentmgmt/documentsListing`               | List documents                  |
+| DELETE | `/api/v1/documentmgmt/documentsDelete`                | Soft / Hard (GDPR) delete       |
 ________________________________________
 
 #### Security:
