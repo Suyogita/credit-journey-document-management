@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.banking.creditjourney.document.controller.DocumentController;
+import com.banking.creditjourney.document.controller.v1.DocumentController;
 import com.banking.creditjourney.document.dto.request.CreateDocumentRequest;
 import com.banking.creditjourney.document.dto.request.DeleteDocumentRequest;
 import com.banking.creditjourney.document.dto.response.DeleteType;
@@ -92,7 +92,7 @@ class DocumentControllerTest {
 		Mockito.when(documentService.uploadFiles(anyList(), any(), eq("user1")))
 				.thenReturn(List.of(new DocumentResponse(1L, "SUCCESS", "test.pdf")));
 
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/documentmgmt/documentUpload").file(validFile())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/documentmgmt/documentUpload").file(validFile())
 				.file(requestPart())).andExpect(status().isOk()).andExpect(jsonPath("$[0].documentId").value(1L))
 				.andExpect(jsonPath("$[0].fileName").value("test.pdf"));
 	}
@@ -101,7 +101,7 @@ class DocumentControllerTest {
 	void upload_missingFiles() throws Exception {
 		mockAuthenticatedUser("user1");
 
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/documentmgmt/documentUpload").file(requestPart())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/documentmgmt/documentUpload").file(requestPart())
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.code").value("BAD_REQUEST"))
 				.andExpect(jsonPath("$.message").value("Request payload is missing or invalid"));
@@ -111,7 +111,7 @@ class DocumentControllerTest {
 	void upload_missingRequest() throws Exception {
 		mockAuthenticatedUser("user1");
 
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/documentmgmt/documentUpload").file(validFile())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/documentmgmt/documentUpload").file(validFile())
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.code").value("BAD_REQUEST"))
 				.andExpect(jsonPath("$.message").value("Request payload is missing or invalid"));
@@ -123,7 +123,7 @@ class DocumentControllerTest {
 
 		SecurityContextHolder.clearContext();
 
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/documentmgmt/documentUpload").file(validFile())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/documentmgmt/documentUpload").file(validFile())
 				.file(requestPart())).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.code").value("BAD_REQUEST"))
 				.andExpect(jsonPath("$.message").value("User not authenticated"));
@@ -136,7 +136,7 @@ class DocumentControllerTest {
 		Mockito.when(documentService.uploadFiles(anyList(), any(), anyString()))
 				.thenThrow(new RuntimeException("DB error"));
 
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/documentmgmt/documentUpload").file(validFile())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/documentmgmt/documentUpload").file(validFile())
 				.file(requestPart())).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code").value("INTERNAL_SERVER_ERROR"));
 	}
@@ -153,7 +153,7 @@ class DocumentControllerTest {
 
 		when(documentService.documentDeletes(any(), eq("user1"))).thenReturn(serviceResponse);
 
-		mockMvc.perform(delete("/api/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(delete("/api/v1/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
 				.andExpect(jsonPath("$.success").value(true)).andExpect(jsonPath("$.data.deletedCount").value(2))
 				.andExpect(jsonPath("$.message").value("Document(s) deleted successfully"));
@@ -167,7 +167,7 @@ class DocumentControllerTest {
 		when(documentService.documentDeletes(any(), eq("user1")))
 				.thenReturn(new DocumentDeleteResponse(List.of(5L), DeleteType.HARD, 1, "user1", LocalDateTime.now()));
 
-		mockMvc.perform(delete("/api/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(delete("/api/v1/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
 				.andExpect(jsonPath("$.success").value(true)).andExpect(jsonPath("$.data.deletedCount").value(1));
 	}
@@ -178,7 +178,7 @@ class DocumentControllerTest {
 
 		DeleteDocumentRequest request = new DeleteDocumentRequest(List.of(), DeleteType.SOFT, "cleanup");
 
-		mockMvc.perform(delete("/api/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(delete("/api/v1/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))).andExpect(status().isBadRequest());
 	}
 
@@ -192,7 +192,7 @@ class DocumentControllerTest {
 				}
 				""";
 
-		mockMvc.perform(delete("/api/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(delete("/api/v1/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
 				.content(invalidJson)).andExpect(status().isBadRequest());
 	}
 
@@ -205,7 +205,7 @@ class DocumentControllerTest {
 		when(documentService.documentDeletes(any(), eq("user1")))
 				.thenThrow(new IllegalArgumentException("Already deleted"));
 
-		mockMvc.perform(delete("/api/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(delete("/api/v1/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))).andExpect(status().isBadRequest());
 	}
 
@@ -215,7 +215,7 @@ class DocumentControllerTest {
 
 		when(documentService.documentDeletes(any(), any())).thenThrow(new RuntimeException("DB down"));
 
-		mockMvc.perform(delete("/api/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(delete("/api/v1/documentmgmt/documentsDelete").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))).andExpect(status().isInternalServerError());
 	}
 
@@ -226,7 +226,7 @@ class DocumentControllerTest {
 		mockAuthenticatedUser("user1");
 		when(documentService.listDocuments(anyString(), any())).thenReturn(emptyPage());
 
-		mockMvc.perform(get("/api/documentmgmt/documentsListing")).andExpect(status().isOk());
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsListing")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -234,7 +234,7 @@ class DocumentControllerTest {
 		mockAuthenticatedUser("user1");
 		when(documentService.listDocuments(anyString(), any())).thenReturn(samplePage());
 
-		mockMvc.perform(get("/api/documentmgmt/documentsListing").param("page", "1").param("size", "5")
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsListing").param("page", "1").param("size", "5")
 				.param("sortBy", "created_at").param("sortDir", "DESC").param("fromDate", "2024-01-01")
 				.param("toDate", "2024-12-31").param("minSize", "100").param("maxSize", "1000"))
 				.andExpect(status().isOk());
@@ -242,19 +242,19 @@ class DocumentControllerTest {
 
 	@Test
 	void listDocuments_invalidPage_shouldReturn400() throws Exception {
-		mockMvc.perform(get("/api/documentmgmt/documentsListing").param("page", "-1"))
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsListing").param("page", "-1"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	void listDocuments_invalidSize_shouldReturn400() throws Exception {
-		mockMvc.perform(get("/api/documentmgmt/documentsListing").param("size", "0"))
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsListing").param("size", "0"))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	void listDocuments_invalidSortBy_shouldReturn400() throws Exception {
-		mockMvc.perform(get("/api/documentmgmt/documentsListing").param("sortBy", "hack_column"))
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsListing").param("sortBy", "hack_column"))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -263,7 +263,7 @@ class DocumentControllerTest {
 		mockAuthenticatedUser("user1");
 		when(documentService.listDocuments(anyString(), any())).thenThrow(new RuntimeException("DB error"));
 
-		mockMvc.perform(get("/api/documentmgmt/documentsListing").param("page", "0").param("size", "10"))
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsListing").param("page", "0").param("size", "10"))
 				.andExpect(status().isInternalServerError());
 	}
 
@@ -294,7 +294,7 @@ class DocumentControllerTest {
 
 		Mockito.when(documentService.downloadDocument(documentId, "user1")).thenReturn(response);
 
-		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", documentId)).andExpect(status().isOk())
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsDownload/{documentId}", documentId)).andExpect(status().isOk())
 				.andExpect((ResultMatcher) content().contentType(MediaType.APPLICATION_PDF))
 				.andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"doc.pdf\""));
 	}
@@ -307,7 +307,7 @@ class DocumentControllerTest {
 		Mockito.when(documentService.downloadDocument(99L, "user1"))
 				.thenThrow(new org.springframework.dao.EmptyResultDataAccessException(1));
 
-		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", 99L)).andExpect(status().isNotFound());
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsDownload/{documentId}", 99L)).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -317,14 +317,14 @@ class DocumentControllerTest {
 		Mockito.when(documentService.downloadDocument(1L, "user1"))
 				.thenThrow(new DocumentNotFoundException("FILE_NOT_FOUND_ON_DISK"));
 
-		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", 1L)).andExpect(status().isNotFound());
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsDownload/{documentId}", 1L)).andExpect(status().isNotFound());
 	}
 
 	@Test
 	void shouldReturn400ForInvalidDocumentId() throws Exception {
 		mockAuthenticatedUser("user1");
 
-		mockMvc.perform(get("/api/documentmgmt/documentsDownload/{documentId}", "abc"))
+		mockMvc.perform(get("/api/v1/documentmgmt/documentsDownload/{documentId}", "abc"))
 				.andExpect(status().isBadRequest());
 	}
 

@@ -1,4 +1,4 @@
-package com.banking.creditjourney.document.controller;
+package com.banking.creditjourney.document.controller.v1;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("api/documentmgmt")
+@RequestMapping("api/v1/documentmgmt")
 @Tag(name = "Credit Journey-Document Management")
 public class DocumentController {
 	private final DocumentServiceImpl documentService;
